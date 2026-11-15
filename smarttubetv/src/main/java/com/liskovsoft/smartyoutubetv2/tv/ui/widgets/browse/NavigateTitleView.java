@@ -153,7 +153,7 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
         mBrandingVisibility = (flags & BRANDING_VIEW_VISIBLE) == BRANDING_VIEW_VISIBLE
                 ? View.VISIBLE : View.INVISIBLE;
 
-        if (mIsSearchOrbEnabled) {
+        if (mIsSearchOrbEnabled || mIsSearchPillEnabled) {
             mSearchOrbView.setVisibility(View.GONE);
         }
 
@@ -244,7 +244,7 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
     private void updateButtonsVisibility() {
         MainUIData mainUIData = MainUIData.instance(getContext());
 
-        mIsSearchOrbEnabled = !mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_SEARCH);
+        mIsSearchOrbEnabled = false;
         mIsSearchPillEnabled = mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_SEARCH);
         mIsAccountViewEnabled = mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_BROWSE_ACCOUNTS);
         mIsLanguageViewEnabled = mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_CHANGE_LANGUAGE);
