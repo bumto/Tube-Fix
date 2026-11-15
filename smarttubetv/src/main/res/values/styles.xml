@@ -14,6 +14,19 @@
         <item name="android:verticalSpacing">@dimen/grid_item_vertical_spacing</item>
     </style>
 
+    <!-- MOD: bold card title (YouTube TV style) -->
+    <style name="Widget.Leanback.ImageCardView.TitleStyle">
+        <item name="android:id">@id/title_text</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:layout_marginBottom">@dimen/lb_basic_card_info_text_margin</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.Leanback.ImageCardView.Title</item>
+    </style>
+
     <!-- Increase spacing between items in RowView -->
     <style name="RowViewStyle" parent="Widget.Leanback.Row.HorizontalGridView">
         <item name="android:horizontalSpacing">@dimen/grid_item_horizontal_spacing</item>
