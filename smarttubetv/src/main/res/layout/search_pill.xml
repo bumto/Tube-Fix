@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: YouTube TV style search pill -->
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/search_pill_mic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/lb_ic_search_mic"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/search_pill_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="12dp"
+        android:textColor="@color/card_meta_text"
+        android:textSize="16sp"
+        android:maxLines="1" />
+
+</merge>

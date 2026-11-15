@@ -22,6 +22,7 @@ import com.liskovsoft.mediaserviceinterfaces.oauth.Account;
 import com.liskovsoft.sharedutils.locale.LocaleUtility;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.PlaybackPresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.SearchPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.AccountSelectionPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.AccountSettingsPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.settings.LanguageSettingsPresenter;
@@ -36,6 +37,7 @@ import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.tooltips.TooltipCompatHandler;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.search.LongClickSearchOrbView;
+import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.search.SearchPillView;
 import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.time.DateTimeView;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
@@ -61,11 +63,14 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
     private DateTimeView mGlobalClock;
     private DateTimeView mGlobalDate;
     private SearchOrbView mSearchOrbView;
+    private SearchOrbView mMicView;
+    private SearchPillView mSearchPill;
     private boolean mInitDone;
     private int mFlags = FULL_VIEW_VISIBLE;
     private int mIconWidth;
     private int mIconHeight;
     private boolean mIsSearchOrbEnabled;
+    private boolean mIsSearchPillEnabled;
     private boolean mIsAccountViewEnabled;
     private boolean mIsLanguageViewEnabled;
     private boolean mIsGlobalClockEnabled;
@@ -152,6 +157,11 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
             mSearchOrbView.setVisibility(View.GONE);
         }
 
+        if (mIsSearchPillEnabled) {
+            mMicView.setVisibility(mSearchVisibility);
+            mSearchPill.setVisibility(mSearchVisibility);
+        }
+
         if (mIsAccountViewEnabled) {
             mAccountView.setVisibility(mSearchVisibility);
         }
@@ -202,6 +212,14 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
         });
         TooltipCompatHandler.setTooltipText(mAccountView, getContext().getString(R.string.settings_accounts));
 
+        // MOD: YouTube TV style — mic orb + search pill
+        mMicView = findViewById(R.id.mic_orb);
+        mSearchPill = findViewById(R.id.search_pill);
+        View.OnClickListener startSearchListener = v -> SearchPresenter.instance(getContext()).startSearch(null);
+        mMicView.setOnOrbClickedListener(startSearchListener);
+        mSearchPill.setOnClickListener(startSearchListener);
+        TooltipCompatHandler.setTooltipText(mSearchPill, getContext().getString(R.string.action_search));
+
         mLanguageView = findViewById(R.id.language_orb);
         mLanguageView.setOnOrbClickedListener(v -> LanguageSettingsPresenter.instance(getContext()).show());
         TooltipCompatHandler.setTooltipText(mLanguageView, getContext().getString(R.string.settings_language_country));
@@ -227,11 +245,14 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
         MainUIData mainUIData = MainUIData.instance(getContext());
 
         mIsSearchOrbEnabled = !mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_SEARCH);
+        mIsSearchPillEnabled = mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_SEARCH);
         mIsAccountViewEnabled = mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_BROWSE_ACCOUNTS);
         mIsLanguageViewEnabled = mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_CHANGE_LANGUAGE);
         mIsGlobalClockEnabled = GeneralData.instance(getContext()).isGlobalClockEnabled();
 
         mSearchOrbView.setVisibility(mIsSearchOrbEnabled ? View.VISIBLE : View.GONE);
+        mMicView.setVisibility(mIsSearchPillEnabled ? View.VISIBLE : View.GONE);
+        mSearchPill.setVisibility(mIsSearchPillEnabled ? View.VISIBLE : View.GONE);
         mAccountView.setVisibility(mIsAccountViewEnabled ? View.VISIBLE : View.GONE);
         mLanguageView.setVisibility(mIsLanguageViewEnabled ? View.VISIBLE : View.GONE);
         mGlobalClock.setVisibility(mIsGlobalClockEnabled ? View.VISIBLE : View.GONE);

@@ -87,9 +87,11 @@ public class VideoCardPresenter extends LongClickPresenter {
     }
 
     private void updateCardBackgroundColor(ComplexImageCardView view, boolean selected) {
-        // MOD: YouTube TV style — keep dark info background and white title when focused
+        // MOD: YouTube TV style — dark info background, white title when focused,
+        // dimmer grey meta (channel name) always
         int backgroundColor = mDefaultBackgroundColor;
         int textColor = mDefaultTextColor;
+        int metaColor = ContextCompat.getColor(view.getContext(), R.color.card_meta_text);
 
         // Both background colors should be set because the view's
         // background is temporarily visible during animations.
@@ -103,11 +105,11 @@ public class VideoCardPresenter extends LongClickPresenter {
 
         TextView titleText = view.findViewById(R.id.title_text);
         if (titleText != null) {
-            titleText.setTextColor(textColor);
+            titleText.setTextColor(selected ? ContextCompat.getColor(view.getContext(), R.color.card_focused_text) : textColor);
         }
         TextView contentText = view.findViewById(R.id.content_text);
         if (contentText != null) {
-            contentText.setTextColor(textColor);
+            contentText.setTextColor(metaColor);
         }
     }
 

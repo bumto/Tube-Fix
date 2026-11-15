@@ -43,11 +43,40 @@
             android:transitionGroup="true"
             android:layout_marginStart="@dimen/search_bar_right_items_margin"
             android:nextFocusLeft="@id/title_orb"
-            android:nextFocusRight="@id/language_orb"
+            android:nextFocusRight="@id/mic_orb"
             app:searchOrbIcon="@drawable/browse_title_account"
             app:searchOrbColor="@color/orb_color"
             app:searchOrbBrightColor="@color/orb_bright_color"
             app:searchOrbIconColor="@color/orb_icon_color"
+            android:visibility="gone" />
+
+        <!-- MOD: YouTube TV style mic button -->
+        <androidx.leanback.widget.SearchOrbView
+            android:id="@+id/mic_orb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:transitionGroup="true"
+            android:layout_marginStart="@dimen/search_bar_right_items_margin"
+            android:nextFocusLeft="@id/account_orb"
+            android:nextFocusRight="@id/search_pill"
+            app:searchOrbIcon="@drawable/lb_ic_search_mic"
+            app:searchOrbColor="@color/orb_color"
+            app:searchOrbBrightColor="@color/orb_bright_color"
+            app:searchOrbIconColor="@color/orb_icon_color"
+            android:visibility="gone" />
+
+        <!-- MOD: YouTube TV style search pill -->
+        <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.search.SearchPillView
+            android:id="@+id/search_pill"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:minWidth="320dp"
+            android:transitionGroup="true"
+            android:layout_marginStart="@dimen/search_bar_right_items_margin"
+            android:layout_gravity="center_vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:nextFocusLeft="@id/mic_orb"
             android:visibility="gone" />
 
         <androidx.leanback.widget.SearchOrbView
