@@ -44,7 +44,10 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDefaultIcon = new ColorDrawable(ContextCompat.getColor(viewGroup.getContext(), R.color.lb_grey));
 
-        View view = inflater.inflate(R.layout.icon_header_item, null);
+        View view = inflater.inflate(R.layout.icon_header_item, viewGroup, false);
+        // MOD: inflate() with null root loses layout_width="match_parent"; force full width
+        view.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.
 
         // MOD: YouTube TV style — show label only when item focused

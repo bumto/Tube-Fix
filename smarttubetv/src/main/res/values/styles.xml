@@ -40,6 +40,8 @@
     <!-- Decrease header spacing in BrowseView -->
     <style name="BrowseHeaderStyle" parent="Widget.Leanback.Headers.VerticalGridView">
         <item name="android:verticalSpacing">@dimen/browse_headers_vertical_spacing</item>
+        <!-- MOD: YouTube TV style pinned rail — no extra start padding -->
+        <item name="android:paddingStart">0dp</item>
     </style>
 
     <!-- Color scheme: Teal (Default) -->
