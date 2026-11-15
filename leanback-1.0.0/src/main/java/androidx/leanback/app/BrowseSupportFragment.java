@@ -1847,6 +1847,9 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     }
 
     void setEntranceTransitionStartState() {
+        if (sPinnedHeadersEnabled) { // MOD: pinned rail — keep dock visible during entrance
+            return;
+        }
         setHeadersOnScreen(false);
         setSearchOrbViewOnScreen(false);
         // NOTE that mMainFragmentAdapter.setEntranceTransitionState(false) will be called
