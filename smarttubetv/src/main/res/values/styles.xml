@@ -27,6 +27,11 @@
         <item name="android:textAppearance">@style/TextAppearance.Leanback.ImageCardView.Title</item>
     </style>
 
+    <!-- MOD: bold shelf header (YouTube TV style) -->
+    <style name="TextAppearance.Leanback.Row.Header" parent="TextAppearance.Leanback.Header">
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!-- Increase spacing between items in RowView -->
     <style name="RowViewStyle" parent="Widget.Leanback.Row.HorizontalGridView">
         <item name="android:horizontalSpacing">@dimen/grid_item_horizontal_spacing</item>

@@ -82,6 +82,12 @@ public class BrowseSectionFragmentFactory extends BrowseSupportFragment.Fragment
         }
 
         if (fragment != null) {
+            // MOD: pass section id to grid fragments (for YouTube TV style tiles etc.)
+            if (fragment instanceof VideoGridFragment) {
+                ((VideoGridFragment) fragment).setSectionId(
+                        header instanceof SectionHeaderItem ? ((SectionHeaderItem) header).getSection().getId() : -1);
+            }
+
             mCurrentFragment = fragment;
 
             runListeners(row);

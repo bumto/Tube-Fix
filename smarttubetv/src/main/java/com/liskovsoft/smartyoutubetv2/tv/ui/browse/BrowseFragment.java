@@ -188,6 +188,9 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
         setHeadersState(HEADERS_ENABLED);
         setHeadersTransitionOnBackEnabled(true);
 
+        // MOD: YouTube TV style pinned icon rail
+        BrowseSupportFragment.sPinnedHeadersEnabled = true;
+
         int brandColorRes = Helpers.getThemeAttr(getContext(), R.attr.brandColor);
         int brandAccentColorRes = Helpers.getThemeAttr(getContext(), R.attr.brandAccentColor);
 

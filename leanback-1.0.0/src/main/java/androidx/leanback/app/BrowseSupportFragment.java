@@ -723,6 +723,8 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     String mWithHeadersBackStackName;
     boolean mShowingHeaders = true;
     boolean mCanShowHeaders = true;
+    // MOD: YouTube TV style pinned rail — headers dock always visible (collapsed), no transitions
+    public static boolean sPinnedHeadersEnabled = false;
     private int mContainerListMarginStart;
     private int mContainerListAlignTop;
     private boolean mMainFragmentScaleEnabled = true;
@@ -981,6 +983,9 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         if (!mCanShowHeaders) {
             throw new IllegalStateException("Cannot start headers transition");
         }
+        if (sPinnedHeadersEnabled) { // MOD: pinned rail — no transitions
+            return;
+        }
         if (isInHeadersTransition() || mShowingHeaders == withHeaders) {
             return;
         }
@@ -1092,7 +1097,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
             }
             if (getTitleView() != null && getTitleView().hasFocus()
                     && direction == View.FOCUS_DOWN) {
-                return mCanShowHeaders && mShowingHeaders
+                return mCanShowHeaders && mShowingHeaders && !sPinnedHeadersEnabled
                         ? mHeadersSupportFragment.getVerticalGridView() : mMainFragment.getView();
             }
 
@@ -1101,7 +1106,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
             int towardStart = isRtl ? View.FOCUS_RIGHT : View.FOCUS_LEFT;
             int towardEnd = isRtl ? View.FOCUS_LEFT : View.FOCUS_RIGHT;
             if (mCanShowHeaders && direction == towardStart) {
-                if (isVerticalScrolling() || mShowingHeaders || !isHeadersDataReady()) {
+                if (isVerticalScrolling() || (!sPinnedHeadersEnabled && mShowingHeaders) || !isHeadersDataReady()) {
                     return focused;
                 }
                 return mHeadersSupportFragment.getVerticalGridView();
@@ -1134,7 +1139,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
                 return true;
             }
             // Make sure not changing focus when requestFocus() is called.
-            if (mCanShowHeaders && mShowingHeaders) {
+            if (mCanShowHeaders && mShowingHeaders && !sPinnedHeadersEnabled) {
                 if (mHeadersSupportFragment != null && mHeadersSupportFragment.getView() != null
                         && mHeadersSupportFragment.getView().requestFocus(
                                 direction, previouslyFocusedRect)) {
@@ -1154,7 +1159,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
             if (getChildFragmentManager().isDestroyed()) {
                 return;
             }
-            if (!mCanShowHeaders || isInHeadersTransition()) return;
+            if (!mCanShowHeaders || isInHeadersTransition() || sPinnedHeadersEnabled) return;
             int childId = child.getId();
             if (childId == R.id.browse_container_dock && mShowingHeaders) {
                 startHeadersTransitionInternal(false);
@@ -1457,12 +1462,18 @@ public class BrowseSupportFragment extends BaseSupportFragment {
 
     void showHeaders(boolean show) {
         if (DEBUG) Log.v(TAG, "showHeaders " + show);
+        if (sPinnedHeadersEnabled) { // MOD: pinned rail — always on screen, never scaled
+            show = true;
+        }
         mHeadersSupportFragment.setHeadersEnabled(show);
         setHeadersOnScreen(show);
-        expandMainFragment(!show);
+        expandMainFragment(sPinnedHeadersEnabled || !show);
     }
 
     private void expandMainFragment(boolean expand) {
+        if (sPinnedHeadersEnabled) { // MOD: pinned rail — content full size, rail overlays
+            expand = true;
+        }
         MarginLayoutParams params = (MarginLayoutParams) mScaleFrameLayout.getLayoutParams();
         params.setMarginStart(!expand ? mContainerListMarginStart : 0);
         mScaleFrameLayout.setLayoutParams(params);
@@ -1666,11 +1677,10 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         mHeadersSupportFragment.setAlignment(mContainerListAlignTop);
         setMainFragmentAlignment();
 
-        if (mCanShowHeaders && mShowingHeaders && mHeadersSupportFragment != null
+        if (mCanShowHeaders && mShowingHeaders && !sPinnedHeadersEnabled && mHeadersSupportFragment != null
                 && mHeadersSupportFragment.getView() != null) {
             mHeadersSupportFragment.getView().requestFocus();
-        } else if ((!mCanShowHeaders || !mShowingHeaders) && mMainFragment != null
-                && mMainFragment.getView() != null) {
+        } else if (mMainFragment != null && mMainFragment.getView() != null) {
             mMainFragment.getView().requestFocus();
         }
 
@@ -1707,7 +1717,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         int alignOffset = mContainerListAlignTop;
         if (mMainFragmentScaleEnabled
                 && mMainFragmentAdapter.isScalingEnabled()
-                && mShowingHeaders) {
+                && mShowingHeaders && !sPinnedHeadersEnabled) {
             alignOffset = (int) (alignOffset / mScaleFactor + 0.5f);
         }
         mMainFragmentAdapter.setAlignment(alignOffset);

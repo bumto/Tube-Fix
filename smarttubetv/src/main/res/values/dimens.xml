@@ -3,6 +3,12 @@
     <!-- Default, same as xhdpi -->
     <!-- 320dpi, Amazon Fire TV Stick -->
 
+    <!-- MOD: YouTube TV style pinned rail (leanback overrides) -->
+    <dimen name="lb_browse_headers_width">96dp</dimen>
+    <dimen name="lb_browse_padding_start">112dp</dimen>
+    <dimen name="lb_browse_headers_z">0dp</dimen>
+    <item name="lb_browse_header_unselect_alpha" type="fraction">100%</item>
+
     <dimen name="card_width">240dp</dimen>
     <dimen name="card_height">132dp</dimen>
     <!-- text_badge_image_view.xml, default: 12sp -->

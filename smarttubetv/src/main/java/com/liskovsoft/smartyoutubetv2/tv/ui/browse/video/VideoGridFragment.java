@@ -9,6 +9,7 @@ import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 import androidx.leanback.widget.VerticalGridPresenter;
 
+import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.VideoGroup;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter;
@@ -40,6 +41,7 @@ public class VideoGridFragment extends GridFragment implements VideoSection {
     private UriBackgroundManager mBackgroundManager;
     private VideoGroupPresenter mMainPresenter;
     private VideoCardPresenter mCardPresenter;
+    private int mSectionId = -1;
     private int mSelectedItemIndex = -1;
     private Video mSelectedItem;
     private float mVideoGridScale;
@@ -54,7 +56,8 @@ public class VideoGridFragment extends GridFragment implements VideoSection {
         }
 
         mMainPresenter = getMainPresenter();
-        mCardPresenter = isShorts() ? new ShortsCardPresenter() : new VideoCardPresenter();
+        mCardPresenter = isShorts() ? new ShortsCardPresenter() :
+                mSectionId == MediaGroup.TYPE_USER_PLAYLISTS ? new TileCardPresenter() : new VideoCardPresenter();
         mBackgroundManager = ((LeanbackActivity) getActivity()).getBackgroundManager();
         mVideoGridScale = MainUIData.instance(getActivity()).getVideoGridScale();
 
@@ -244,6 +247,11 @@ public class VideoGridFragment extends GridFragment implements VideoSection {
 
     protected boolean isShorts() {
         return false;
+    }
+
+    /** MOD: section id (MediaGroup type) passed from the section factory */
+    public void setSectionId(int sectionId) {
+        mSectionId = sectionId;
     }
 
     private MainUIData getMainUIData() {

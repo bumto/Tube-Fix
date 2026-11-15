@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: YouTube TV style rail item (icon + label stacked) -->
 <androidx.leanback.widget.NonOverlappingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="@drawable/header_pill_bg">
 
     <ImageView
         android:id="@+id/header_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:tint="@color/header_icon_tint"
         android:contentDescription="@string/header_icon" />
 
     <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.HeaderMarqueeTextViewCompat
         android:id="@+id/header_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
 
+        android:gravity="center"
         android:singleLine="true"
-        android:maxWidth="150sp"
         android:marqueeRepeatLimit="marquee_forever"
         android:ellipsize="marquee"
         android:scrollHorizontally="true"
 
+        android:textColor="@color/header_label_color"
+        android:textSize="13sp"
         style="@style/TextAppearance.Leanback.Header"/>
+
 </androidx.leanback.widget.NonOverlappingLinearLayout>

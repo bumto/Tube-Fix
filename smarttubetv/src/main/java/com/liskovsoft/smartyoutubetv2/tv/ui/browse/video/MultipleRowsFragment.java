@@ -6,12 +6,13 @@ import androidx.annotation.Nullable;
 import androidx.leanback.app.RowsSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
-import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
 import androidx.leanback.widget.OnItemViewSelectedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
+import com.liskovsoft.smartyoutubetv2.tv.ui.browse.IconHeaderItem;
+import com.liskovsoft.smartyoutubetv2.tv.presenter.RowIconHeaderPresenter;
 import androidx.leanback.widget.RowPresenter;
 import androidx.leanback.widget.RowPresenter.ViewHolder;
 import androidx.recyclerview.widget.RecyclerView;
@@ -92,6 +93,11 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
         if (mRowsAdapter == null) {
             mRowPresenter = new CustomListRowPresenter();
             mRowPresenter.enableChildRoundedCorners(getMainUIData().isUiTweakEnabled(MainUIData.UI_TWEAK_ROUNDED_CORNERS));
+
+            // MOD: YouTube TV style — shelf header with icon
+            RowIconHeaderPresenter headerPresenter = new RowIconHeaderPresenter();
+            headerPresenter.setNullItemVisibilityGone(true);
+            mRowPresenter.setHeaderPresenter(headerPresenter);
 
             ClassPresenterSelector presenterSelector = new ClassPresenterSelector();
             presenterSelector.addClassPresenter(ListRow.class, mRowPresenter);
@@ -250,7 +256,7 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
         VideoGroupObjectAdapter existingAdapter = GridFragmentHelper.findRelatedAdapter(mVideoGroupAdapters, group, this::freeze);
 
         if (existingAdapter == null) {
-            HeaderItem rowHeader = new HeaderItem(group.getTitle());
+            IconHeaderItem rowHeader = new IconHeaderItem(group.getTitle(), GridFragmentHelper.getShelfIconRes(group.getType()));
             int videoGroupId = group.getId(); // Create unique int from category.
 
             VideoGroupObjectAdapter videoGroupAdapter = new VideoGroupObjectAdapter(group, group.isShorts() ? mShortsPresenter : mCardPresenter);

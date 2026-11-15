@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: YouTube TV style rail label color -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:color="#0F0F0F" />
+    <item android:color="#B0B0B0" />
+</selector>

@@ -47,6 +47,14 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         View view = inflater.inflate(R.layout.icon_header_item, null);
         view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.
 
+        // MOD: YouTube TV style — show label only when item focused
+        TextView labelView = view.findViewById(R.id.header_label);
+        view.setOnFocusChangeListener((v, hasFocus) -> {
+            if (labelView != null) {
+                labelView.setVisibility(hasFocus ? View.VISIBLE : View.INVISIBLE);
+            }
+        });
+
         return new ViewHolder(view);
     }
 
@@ -82,6 +90,7 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         TextView label = rootView.findViewById(R.id.header_label);
         if (label != null) {
             label.setText(headerItem.getName());
+            label.setVisibility(rootView.isFocused() ? View.VISIBLE : View.INVISIBLE); // MOD
         }
     }
 

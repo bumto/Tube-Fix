@@ -7,7 +7,7 @@
     <color name="default_background_gradient_start">#0F0F0F</color>
     <color name="default_background_gradient_end">#212121</color>
     <color name="fastlane_background">#FF0033</color>
-    <color name="fastlane_background_dark">#CC0000</color>
+    <color name="fastlane_background_dark">#0F0F0F</color>
     <color name="default_light_grey">#343434</color>
     <color name="search_opaque">#FF0033</color>
     <color name="search_opaque_yellow">#FF0033</color>
@@ -25,6 +25,8 @@
     <color name="card_unfocused_text">#B0B0B0</color>
     <color name="card_focused_text">#FFFFFF</color>
     <color name="card_meta_text">#909090</color>
+    <!-- MOD: YouTube TV style player overlay -->
+    <color name="lb_playback_controls_time_text_color">#E6FFFFFF</color>
 
     <!-- Browse fragment colors -->
     <color name="shelf_background">#282828</color>

@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.view.WindowManager;
 
 import com.liskovsoft.sharedutils.helpers.Helpers;
+import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.VideoGroup;
 import com.liskovsoft.smartyoutubetv2.common.app.views.ViewManager;
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
@@ -187,5 +188,37 @@ public class GridFragmentHelper {
                 && (Helpers.equals(lastGroup.getTitle(), group.getTitle())
                     || lastGroup.getTitle() == null); // we could set title to null in the previous iteration
         return matchedRowFound;
+    }
+
+    /**
+     * MOD: YouTube TV style — icon for the shelf header
+     */
+    public static int getShelfIconRes(int type) {
+        switch (type) {
+            case MediaGroup.TYPE_MUSIC:
+                return R.drawable.icon_music;
+            case MediaGroup.TYPE_SHORTS:
+                return R.drawable.icon_shorts;
+            case MediaGroup.TYPE_LIVE:
+                return R.drawable.icon_live;
+            case MediaGroup.TYPE_NEWS:
+                return R.drawable.icon_news;
+            case MediaGroup.TYPE_GAMING:
+                return R.drawable.icon_gaming;
+            case MediaGroup.TYPE_SPORTS:
+                return R.drawable.icon_sports;
+            case MediaGroup.TYPE_TRENDING:
+                return R.drawable.icon_trending;
+            case MediaGroup.TYPE_SUBSCRIPTIONS:
+                return R.drawable.icon_subscriptions;
+            case MediaGroup.TYPE_HISTORY:
+                return R.drawable.icon_history;
+            case MediaGroup.TYPE_USER_PLAYLISTS:
+                return R.drawable.icon_playlist;
+            case MediaGroup.TYPE_KIDS_HOME:
+                return R.drawable.icon_kids_home;
+            default:
+                return 0;
+        }
     }
 }
