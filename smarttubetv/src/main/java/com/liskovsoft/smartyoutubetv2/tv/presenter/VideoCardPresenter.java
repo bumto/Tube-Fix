@@ -37,8 +37,6 @@ public class VideoCardPresenter extends LongClickPresenter {
     private static final String TAG = VideoCardPresenter.class.getSimpleName();
     private int mDefaultBackgroundColor = -1;
     private int mDefaultTextColor = -1;
-    private int mSelectedBackgroundColor = -1;
-    private int mSelectedTextColor = -1;
     private int mCardPreviewType;
     private int mThumbQuality;
     private int mWidth;
@@ -52,10 +50,6 @@ public class VideoCardPresenter extends LongClickPresenter {
             ContextCompat.getColor(context, Helpers.getThemeAttr(context, R.attr.cardDefaultBackground));
         mDefaultTextColor =
                 ContextCompat.getColor(context, R.color.card_default_text);
-        mSelectedBackgroundColor =
-                ContextCompat.getColor(context, Helpers.getThemeAttr(context, R.attr.cardSelectedBackground));
-        mSelectedTextColor =
-                ContextCompat.getColor(context, R.color.card_selected_text_grey);
 
         mCardPreviewType = getCardPreviewType(context);
         mThumbQuality = getThumbQuality(context);
@@ -93,8 +87,9 @@ public class VideoCardPresenter extends LongClickPresenter {
     }
 
     private void updateCardBackgroundColor(ComplexImageCardView view, boolean selected) {
-        int backgroundColor = selected ? mSelectedBackgroundColor : mDefaultBackgroundColor;
-        int textColor = selected ? mSelectedTextColor : mDefaultTextColor;
+        // MOD: YouTube TV style — keep dark info background and white title when focused
+        int backgroundColor = mDefaultBackgroundColor;
+        int textColor = mDefaultTextColor;
 
         // Both background colors should be set because the view's
         // background is temporarily visible during animations.

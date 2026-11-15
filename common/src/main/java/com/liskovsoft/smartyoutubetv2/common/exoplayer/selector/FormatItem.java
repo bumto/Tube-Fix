@@ -11,6 +11,7 @@ public interface FormatItem {
     FormatItem VIDEO_AUTO = ExoFormatItem.fromVideoParams(-1, -1, -1);
     FormatItem VIDEO_SUB_SD_AVC_30 = ExoFormatItem.fromVideoSpec("426,240,30,avc", false);
     FormatItem VIDEO_SD_AVC_30 = ExoFormatItem.fromVideoSpec("640,360,30,avc", false);
+    FormatItem VIDEO_480P_AVC_30 = ExoFormatItem.fromVideoSpec("854,480,30,avc", false);
     FormatItem VIDEO_HD_AVC_30 = ExoFormatItem.fromVideoSpec("1280,720,30,avc", false);
     FormatItem VIDEO_FHD_AVC_30 = ExoFormatItem.fromVideoSpec("1920,1080,30,avc", false);
     FormatItem VIDEO_FHD_AVC_60 = ExoFormatItem.fromVideoSpec("1920,1080,60,avc", false);

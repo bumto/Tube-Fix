@@ -21,10 +21,6 @@ public class OptionCategory {
         return new OptionCategory(title, Collections.singletonList(item), TYPE_LONG_TEXT);
     }
 
-    public static OptionCategory chat(CharSequence title, OptionItem item) {
-        return new OptionCategory(title, Collections.singletonList(item), TYPE_CHAT);
-    }
-
     public static OptionCategory comments(CharSequence title, OptionItem item) {
         return new OptionCategory(title, Collections.singletonList(item), TYPE_COMMENTS);
     }
@@ -66,7 +62,6 @@ public class OptionCategory {
     public static final int TYPE_SINGLE_BUTTON = 3;
     public static final int TYPE_STRING_LIST = 4;
     public static final int TYPE_LONG_TEXT = 5;
-    public static final int TYPE_CHAT = 6;
     public static final int TYPE_COMMENTS = 7;
     public final int id;
     public final int type;

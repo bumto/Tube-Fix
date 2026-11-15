@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- MOD: Focused player button color (violet tint) -->
-    <color name="lb_control_button_color">#86EDE9FE</color>
+    <!-- MOD: Focused player button color (YouTube TV look) -->
+    <color name="lb_control_button_color">#86EEEEEE</color>
 
-    <!-- Common colors -->
-    <color name="default_background_gradient_start">#0B0712</color>
-    <color name="default_background_gradient_end">#C4B5FD</color>
-    <color name="fastlane_background">#8B5CF6</color>
-    <color name="fastlane_background_dark">#4C1D95</color>
-    <color name="default_light_grey">#2A2038</color>
-    <color name="search_opaque">#8B5CF6</color>
-    <color name="search_opaque_yellow">#ffaa3f</color>
+    <!-- Common colors: YouTube dark background + red accent -->
+    <color name="default_background_gradient_start">#0F0F0F</color>
+    <color name="default_background_gradient_end">#212121</color>
+    <color name="fastlane_background">#FF0033</color>
+    <color name="fastlane_background_dark">#CC0000</color>
+    <color name="default_light_grey">#343434</color>
+    <color name="search_opaque">#FF0033</color>
+    <color name="search_opaque_yellow">#FF0033</color>
 
-    <!-- Card view colors -->
-    <color name="card_selected_background_white">#EDE9FE</color>
-    <color name="card_selected_background_white_grey">#C4B5FD</color>
-    <color name="card_selected_background_yellow">#ffaa3f</color>
-    <color name="card_selected_background_grey">#3B2A5A</color>
-    <color name="card_selected_text_black">#1A1030</color>
-    <color name="card_selected_text_grey">#1A1030</color>
-    <color name="card_default_background">#7C3AED</color>
-    <color name="card_default_background_dark">#3B2A5A</color>
+    <!-- Card view colors: white selection like YouTube TV -->
+    <color name="card_selected_background_white">#FFFFFF</color>
+    <color name="card_selected_background_white_grey">#D3D3D3</color>
+    <color name="card_selected_background_yellow">#FF0033</color>
+    <color name="card_selected_background_grey">#343434</color>
+    <color name="card_selected_text_black">#000000</color>
+    <color name="card_selected_text_grey">#343434</color>
+    <color name="card_default_background">#212121</color>
+    <color name="card_default_background_dark">#0F0F0F</color>
     <color name="card_default_text">#FFFFFF</color>
 
     <!-- Browse fragment colors -->
-    <color name="shelf_background">#171022</color>
-    <color name="shelf_background_dark">#0B0712</color>
-    <color name="icon_background">#3B2A5A</color>
-    <color name="icon_alt_background">#4C1D95</color>
+    <color name="shelf_background">#282828</color>
+    <color name="shelf_background_dark">#0F0F0F</color>
+    <color name="icon_background">#4A4F51</color>
+    <color name="icon_alt_background">#2A2F51</color>
     <color name="player_background">#FF000000</color>
 
-    <!-- Dark color scheme -->
-    <color name="scheme_grey_background">#171022</color>
-    <color name="scheme_grey_background_dark">#0B0712</color>
-    <color name="scheme_grey_shelf_background_dark">#0B0712</color>
-    <color name="scheme_grey_card_background_dark">#1E1530</color>
+    <!-- Dark color scheme: YouTube TV background -->
+    <color name="scheme_grey_background">#0F0F0F</color>
+    <color name="scheme_grey_background_dark">#0F0F0F</color>
+    <color name="scheme_grey_shelf_background_dark">#0F0F0F</color>
+    <color name="scheme_grey_card_background_dark">#212121</color>
 
-    <!-- Red color scheme -->
-    <color name="scheme_red_background">#131313</color>
+    <!-- Red color scheme: YouTube TV -->
+    <color name="scheme_red_background">#0F0F0F</color>
     <color name="scheme_red_background_dark">@color/dark_red</color>
-    <color name="scheme_red_shelf_background_dark">#131313</color>
-    <color name="scheme_red_card_background_dark">#36474f</color>
+    <color name="scheme_red_shelf_background_dark">#0F0F0F</color>
+    <color name="scheme_red_card_background_dark">#212121</color>
 
-    <!-- Blue color scheme -->
-    <color name="scheme_blue_background">#A78BFA</color>
-    <color name="scheme_blue_background_dark">#6D28D9</color>
+    <!-- Blue color scheme: neutral blue (not YouTube) -->
+    <color name="scheme_blue_background">#33B5E5</color>
+    <color name="scheme_blue_background_dark">#207EA1</color>
 
     <!-- Vineyard -->
     <color name="black_87pc">#77000000</color>
-    <color name="primary_dark">#5B21B6</color>
-    <color name="primary_light">#DDD6FE</color>
-    <color name="primary">#8B5CF6</color>
+    <color name="primary_dark">#B31217</color>
+    <color name="primary_light">#FF8080</color>
+    <color name="primary">#FF0033</color>
     <color name="white_87pc">#DDFFFFFF</color>
 
     <!-- Tooltip mod: extracted private values -->

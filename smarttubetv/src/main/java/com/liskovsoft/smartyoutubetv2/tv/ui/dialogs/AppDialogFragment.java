@@ -24,8 +24,6 @@ import com.liskovsoft.smartyoutubetv2.common.app.views.AppDialogView;
 import com.liskovsoft.smartyoutubetv2.common.misc.MotherActivity;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
-import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.ChatPreference;
-import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.ChatPreferenceDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.CommentsPreference;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.CommentsPreferenceDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.RadioListPreferenceDialogFragment;
@@ -165,15 +163,6 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
         } else if (pref instanceof ListPreference) {
             ListPreference listPreference = (ListPreference) pref;
             RadioListPreferenceDialogFragment f = RadioListPreferenceDialogFragment.newInstanceSingle(listPreference.getKey());
-            f.enableTransparent(mIsTransparent);
-            f.setTargetFragment(caller, 0);
-            f.setPreference(pref);
-            startPreferenceFragment(f);
-
-            return true;
-        } else if (pref instanceof ChatPreference) {
-            ChatPreference chatPreference = (ChatPreference) pref;
-            ChatPreferenceDialogFragment f = ChatPreferenceDialogFragment.newInstance(chatPreference.getChatReceiver(), chatPreference.getKey());
             f.enableTransparent(mIsTransparent);
             f.setTargetFragment(caller, 0);
             f.setPreference(pref);

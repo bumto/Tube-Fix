@@ -32,29 +32,6 @@
         android:paddingRight="150sp"/>
 
     <LinearLayout
-        android:id="@+id/live_chat_wrapper"
-        android:layout_width="300sp"
-        android:layout_height="match_parent"
-        android:layout_gravity="right">
-        <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.chat.LiveChatView
-            android:id="@+id/live_chat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:showIncomingTime="false"
-            app:isMessageFocusable="false"
-            app:incomingDefaultBubbleColor="@color/live_chat_bg"
-            app:incomingTextColor="@color/white"
-            app:incomingBubblePaddingLeft="10sp"
-            app:incomingBubblePaddingRight="10sp"
-            app:incomingBubblePaddingTop="0sp"
-            app:incomingBubblePaddingBottom="0sp"
-            app:incomingAvatarHeight="20dp"
-            app:incomingAvatarWidth="20dp"
-            android:visibility="gone"
-        />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/player_overlay_wrapper"
         android:orientation="vertical"
         android:layout_width="wrap_content"

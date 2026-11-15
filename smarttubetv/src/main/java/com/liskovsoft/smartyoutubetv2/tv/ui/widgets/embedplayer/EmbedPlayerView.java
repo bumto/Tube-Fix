@@ -14,7 +14,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.liskovsoft.mediaserviceinterfaces.data.MediaItemFormatInfo;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.VideoGroup;
-import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.ChatReceiver;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.SeekBarSegment;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.PlaybackPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
@@ -203,11 +202,6 @@ public class EmbedPlayerView extends PlayerView implements PlaybackView {
 
     @Override
     public void updateEndingTime() {
-
-    }
-
-    @Override
-    public void setChatReceiver(ChatReceiver chatReceiver) {
 
     }
 

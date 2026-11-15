@@ -21,7 +21,6 @@ import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.BootDialogPr
 import com.liskovsoft.smartyoutubetv2.common.app.views.BrowseView;
 import com.liskovsoft.smartyoutubetv2.common.app.views.SplashView;
 import com.liskovsoft.smartyoutubetv2.common.app.views.ViewManager;
-import com.liskovsoft.smartyoutubetv2.common.misc.GDriveBackupWorker;
 import com.liskovsoft.smartyoutubetv2.common.misc.LocalDriveBackupWorker;
 import com.liskovsoft.smartyoutubetv2.common.misc.MediaServiceManager;
 import com.liskovsoft.smartyoutubetv2.common.misc.StreamReminderService;
@@ -119,7 +118,6 @@ public class SplashPresenter extends BasePresenter<SplashView> {
         YouTubeServiceManager.instance().refreshCacheIfNeeded(); // warm up player engine
         enableHistoryIfNeeded();
         Utils.updateChannels(getContext());
-        GDriveBackupWorker.schedule(getContext());
         LocalDriveBackupWorker.schedule(getContext());
     }
 

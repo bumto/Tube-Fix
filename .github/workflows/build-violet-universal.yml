@@ -1,4 +1,4 @@
-name: Build Violet Universal APK
+name: Build Red Universal APK
 
 on:
   workflow_dispatch:
@@ -7,6 +7,7 @@ on:
     paths:
       - "smarttubetv/**"
       - "common/**"
+      - "leanback-1.0.0/**"
       - ".github/workflows/build-violet-universal.yml"
 
 jobs:
@@ -67,12 +68,12 @@ jobs:
         run: |
           mkdir -p dist
           cp smarttubetv/build/outputs/apk/ststable/release/*_universal.apk \
-            dist/SmartTube_Violet_universal.apk
+            dist/SmartTube_Red_universal.apk
           ls -lh dist
 
       - name: Upload universal APK
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: SmartTube_Violet_universal
-          path: dist/SmartTube_Violet_universal.apk
+          name: SmartTube_Red_universal
+          path: dist/SmartTube_Red_universal.apk
           if-no-files-found: error

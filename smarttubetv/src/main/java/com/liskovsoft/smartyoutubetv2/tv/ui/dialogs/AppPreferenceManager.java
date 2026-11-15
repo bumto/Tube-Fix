@@ -13,7 +13,6 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionCatego
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionItem;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
-import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.ChatPreference;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.CommentsPreference;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.StringListPreference;
 
@@ -62,8 +61,6 @@ public class AppPreferenceManager {
                 return createButtonPreference(category);
             case OptionCategory.TYPE_LONG_TEXT:
                 return createLongTextPreference(category);
-            case OptionCategory.TYPE_CHAT:
-                return createChatPreference(category);
             case OptionCategory.TYPE_COMMENTS:
                 return createCommentsPreference(category);
         }
@@ -85,17 +82,6 @@ public class AppPreferenceManager {
         pref.setDialogMessage(category.options.get(0).getTitle());
 
         initMultiSelectListPreference(category, pref);
-
-        return pref;
-    }
-
-    private Preference createChatPreference(OptionCategory category) {
-        ChatPreference pref = new ChatPreference(mContext);
-
-        OptionItem optionItem = category.options.get(0);
-        pref.setChatReceiver(optionItem.getChatReceiver());
-
-        initDialogPreference(category, pref);
 
         return pref;
     }

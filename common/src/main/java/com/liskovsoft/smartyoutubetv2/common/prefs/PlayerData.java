@@ -718,21 +718,8 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
     }
 
     public FormatItem getDefaultVideoFormat() {
-        FormatItem formatItem = mDefaultVideoFormats.get(Build.MODEL);
-
-        if (formatItem == null) {
-            if (VERSION.SDK_INT <= 19) { // Android 4 playback crash fix (memory leak?)
-                formatItem = FormatItem.VIDEO_SD_AVC_30;
-            } else if (VERSION.SDK_INT <= 23 && DeviceHelpers.isVP9ResolutionSupported(1080)) {
-                formatItem = FormatItem.VIDEO_FHD_VP9_60;
-            } else if (DeviceHelpers.isVP9ResolutionSupported(2160)) {
-                formatItem = FormatItem.VIDEO_4K_VP9_60;
-            } else if (DeviceHelpers.isVP9ResolutionSupported(1080)) {
-                formatItem = FormatItem.VIDEO_FHD_VP9_60;
-            }
-        }
-
-        return formatItem != null ? formatItem : FormatItem.VIDEO_HD_AVC_30;
+        // MOD: default to 480p regardless of device capabilities
+        return FormatItem.VIDEO_480P_AVC_30;
     }
 
     public FormatItem getDefaultSubtitleFormat() {
@@ -773,10 +760,10 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
      * Overrides for auto detected values
      */
     private void initDefaultFormats() {
-        mDefaultVideoFormats.put("SHIELD Android TV", FormatItem.VIDEO_4K_VP9_60);
-        mDefaultVideoFormats.put("AFTMM", FormatItem.VIDEO_4K_VP9_60); // Stick 4K 2018
-        mDefaultVideoFormats.put("AFTKA", FormatItem.VIDEO_4K_VP9_60); // Stick 4K Max 2021
-        mDefaultVideoFormats.put("P1", FormatItem.VIDEO_FHD_AVC_60); // Chinese projector (see annoying emails)
+        mDefaultVideoFormats.put("SHIELD Android TV", FormatItem.VIDEO_480P_AVC_30);
+        mDefaultVideoFormats.put("AFTMM", FormatItem.VIDEO_480P_AVC_30); // Stick 4K 2018
+        mDefaultVideoFormats.put("AFTKA", FormatItem.VIDEO_480P_AVC_30); // Stick 4K Max 2021
+        mDefaultVideoFormats.put("P1", FormatItem.VIDEO_480P_AVC_30); // Chinese projector (see annoying emails)
     }
 
     private void restoreState() {
