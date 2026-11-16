@@ -1159,7 +1159,14 @@ public class BrowseSupportFragment extends BaseSupportFragment {
             if (getChildFragmentManager().isDestroyed()) {
                 return;
             }
-            if (!mCanShowHeaders || isInHeadersTransition() || sPinnedHeadersEnabled) return;
+            if (!mCanShowHeaders || isInHeadersTransition()) {
+                return;
+            }
+            if (sPinnedHeadersEnabled) { // MOD: YouTube TV — expand rail on focus, collapse on leave
+                setPinnedHeadersExpanded(child != null
+                        && child.getId() == R.id.browse_headers_dock);
+                return;
+            }
             int childId = child.getId();
             if (childId == R.id.browse_container_dock && mShowingHeaders) {
                 startHeadersTransitionInternal(false);
@@ -1451,6 +1458,59 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         }
     }
 
+    // MOD: YouTube TV style pinned rail
+    public static boolean sPinnedHeadersEnabled;
+    public static boolean sPinnedHeadersExpanded;
+
+    private void setPinnedHeadersExpanded(boolean expand) {
+        if (!sPinnedHeadersEnabled || expand == sPinnedHeadersExpanded) {
+            return;
+        }
+        sPinnedHeadersExpanded = expand;
+        View headersRoot = mHeadersSupportFragment == null ? null
+                : mHeadersSupportFragment.getView();
+        if (headersRoot != null) {
+            int width = (int) headersRoot.getResources().getDimension(expand
+                    ? R.dimen.lb_browse_headers_width_expanded
+                    : R.dimen.lb_browse_headers_width);
+            MarginLayoutParams lp = (MarginLayoutParams) headersRoot.getLayoutParams();
+            lp.width = width;
+            headersRoot.setLayoutParams(lp);
+            View grid = headersRoot.findViewById(R.id.browse_headers);
+            if (grid != null) {
+                MarginLayoutParams glp = (MarginLayoutParams) grid.getLayoutParams();
+                glp.width = width;
+                grid.setLayoutParams(glp);
+            }
+            updatePinnedHeaderLabels(headersRoot);
+        }
+        if (mScaleFrameLayout != null) {
+            MarginLayoutParams params = (MarginLayoutParams) mScaleFrameLayout.getLayoutParams();
+            params.setMarginStart(expand ? getPinnedExpandMargin(mScaleFrameLayout) : 0);
+            mScaleFrameLayout.setLayoutParams(params);
+        }
+    }
+
+    static int getPinnedExpandMargin(View view) {
+        return (int) view.getResources().getDimension(R.dimen.lb_browse_headers_expand_margin);
+    }
+
+    private void updatePinnedHeaderLabels(View headersRoot) {
+        View grid = headersRoot.findViewById(R.id.browse_headers);
+        if (!(grid instanceof ViewGroup)) {
+            return;
+        }
+        ViewGroup list = (ViewGroup) grid;
+        for (int i = 0; i < list.getChildCount(); i++) {
+            View wrapper = list.getChildAt(i);
+            View label = wrapper == null ? null : wrapper.findViewById(R.id.header_label);
+            if (label != null) {
+                label.setVisibility(sPinnedHeadersExpanded || wrapper.isFocused()
+                        ? View.VISIBLE : View.INVISIBLE);
+            }
+        }
+    }
+
     private void setHeadersOnScreen(boolean onScreen) {
         MarginLayoutParams lp;
         View containerList;
@@ -1473,6 +1533,9 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     private void expandMainFragment(boolean expand) {
         if (sPinnedHeadersEnabled) { // MOD: pinned rail — content full size, rail overlays
             expand = true;
+            MarginLayoutParams pinned = (MarginLayoutParams) mScaleFrameLayout.getLayoutParams();
+            pinned.setMarginStart(sPinnedHeadersExpanded ? getPinnedExpandMargin(mScaleFrameLayout) : 0);
+            mScaleFrameLayout.setLayoutParams(pinned);
         }
         MarginLayoutParams params = (MarginLayoutParams) mScaleFrameLayout.getLayoutParams();
         params.setMarginStart(!expand ? mContainerListMarginStart : 0);
