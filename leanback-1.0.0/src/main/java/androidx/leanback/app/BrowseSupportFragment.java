@@ -1459,7 +1459,6 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     }
 
     // MOD: YouTube TV style pinned rail
-    public static boolean sPinnedHeadersEnabled;
     public static boolean sPinnedHeadersExpanded;
 
     private void setPinnedHeadersExpanded(boolean expand) {
