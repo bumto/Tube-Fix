@@ -2,6 +2,7 @@
 <!-- MOD: YouTube TV style rail item (icon + label stacked) -->
 <androidx.leanback.widget.NonOverlappingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="88dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -14,7 +15,7 @@
         android:id="@+id/header_icon"
         android:layout_width="26dp"
         android:layout_height="26dp"
-        android:tint="@color/header_icon_tint"
+        app:tint="@color/header_icon_tint"
         android:contentDescription="@string/header_icon" />
 
     <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.HeaderMarqueeTextViewCompat
