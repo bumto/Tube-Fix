@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- MOD: YouTube TV style shelf header with icon -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:orientation="horizontal"
@@ -11,7 +12,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginEnd="8dp"
-        android:tint="@color/card_unfocused_text"
+        app:tint="@color/card_unfocused_text"
         android:contentDescription="@null" />
 
     <androidx.leanback.widget.RowHeaderView
