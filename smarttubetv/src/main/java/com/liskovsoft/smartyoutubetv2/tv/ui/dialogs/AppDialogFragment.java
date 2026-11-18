@@ -50,6 +50,7 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
 
     // MOD: two-pane layout for settings dialogs (set by SettingsGridFragment)
     private static boolean sTwoPaneEnabled;
+    private static boolean sTwoPaneActive;
 
     public static void setTwoPaneEnabled(boolean enabled) {
         sTwoPaneEnabled = enabled;
@@ -57,6 +58,14 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
 
     public static boolean isTwoPaneEnabled() {
         return sTwoPaneEnabled;
+    }
+
+    /**
+     * True while the two-pane view is actually on screen. Used to allow horizontal
+     * navigation inside the panes instead of closing the dialog.
+     */
+    public static boolean isTwoPaneActive() {
+        return sTwoPaneActive;
     }
 
     private static final String PREFERENCE_FRAGMENT_TAG =
@@ -327,6 +336,7 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
 
             if (sTwoPaneEnabled && getContext() != null) {
                 // MOD: YouTube TV style settings — categories left, options right.
+                sTwoPaneActive = true;
                 expandSettingsContainer();
                 return new TwoPaneSettingsView(getContext(), mCategories, mTitle);
             }
@@ -345,6 +355,7 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
 
         @Override
         public void onDestroyView() {
+            sTwoPaneActive = false;
             restoreSettingsContainer();
             super.onDestroyView();
         }

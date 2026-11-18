@@ -70,8 +70,11 @@ public class AppDialogActivity extends MotherActivity {
             return false;
         }
 
+        // MOD: don't close the dialog on left/right while navigating between two panes.
+        boolean twoPane = AppDialogFragment.isTwoPaneActive();
+
         // Toggle dialog
-        if (!mFragment.isOverlay() && (KeyHelpers.isLeftRightKey(event.getKeyCode()) || KeyHelpers.isMenuKey(event.getKeyCode()))) {
+        if (!mFragment.isOverlay() && !twoPane && (KeyHelpers.isLeftRightKey(event.getKeyCode()) || KeyHelpers.isMenuKey(event.getKeyCode()))) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 finish();
             }
