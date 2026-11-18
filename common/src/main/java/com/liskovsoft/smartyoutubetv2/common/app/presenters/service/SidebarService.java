@@ -421,6 +421,7 @@ public class SidebarService implements ProfileChangeListener {
 
         // Backward compatibility
         enableSection(MediaGroup.TYPE_SETTINGS, true);
+        enableSection(MediaGroup.TYPE_MOVIES, true);
         enableSection(MediaGroup.TYPE_SEARCH, false);
 
         cleanupPinnedItems();
