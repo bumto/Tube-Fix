@@ -448,7 +448,9 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
             }
 
             SectionHeaderItem sectionHeaderItem = (SectionHeaderItem) headerItem;
-            int group = SectionHeaderItem.groupForType(sectionHeaderItem.getType());
+            // Note: BrowseSection.getType() is overwritten with the layout type (row/grid)
+            // once the section loads, so rely on the section id (MediaGroup type) instead.
+            int group = SectionHeaderItem.groupForType((int) headerItem.getId());
 
             sectionHeaderItem.setGroupStart(prevGroup != -1 && prevGroup != group);
             prevGroup = group;
