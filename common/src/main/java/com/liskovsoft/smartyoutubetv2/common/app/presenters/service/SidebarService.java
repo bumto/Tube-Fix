@@ -27,6 +27,21 @@ public class SidebarService implements ProfileChangeListener {
     private boolean mIsSettingsSectionEnabled;
     private int mBootSectionId;
     private final static int RESERVED_ID = 100;
+    // MOD: TizenTube-style sidebar order
+    private final static int[] TIZEN_SECTION_ORDER = {
+            MediaGroup.TYPE_SEARCH,
+            MediaGroup.TYPE_HOME,
+            MediaGroup.TYPE_SUBSCRIPTIONS,
+            MediaGroup.TYPE_USER_PLAYLISTS,
+            MediaGroup.TYPE_MUSIC,
+            MediaGroup.TYPE_MOVIES,
+            MediaGroup.TYPE_GAMING,
+            MediaGroup.TYPE_NEWS,
+            MediaGroup.TYPE_SPORTS,
+            MediaGroup.TYPE_SHORTS,
+            MediaGroup.TYPE_SETTINGS,
+            MediaGroup.TYPE_HISTORY
+    };
 
     private SidebarService(Context context) {
         mContext = context.getApplicationContext();
@@ -134,12 +149,17 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     public int getSectionIndex(int sectionId) {
-        // 1) Distinguish section from pinned item
-        // 2) Add pinned items after the sections
+        // MOD: keep the TizenTube tab order regardless of the stored sidebar preferences.
+        for (int i = 0; i < TIZEN_SECTION_ORDER.length; i++) {
+            if (TIZEN_SECTION_ORDER[i] == sectionId) {
+                return i;
+            }
+        }
 
+        // Other sections and user pinned items go after the TizenTube tabs.
         int index = findPinnedItemIndex(sectionId);
 
-        return index;
+        return index < 0 ? TIZEN_SECTION_ORDER.length + RESERVED_ID : TIZEN_SECTION_ORDER.length + index;
     }
 
     public void renameSection(int sectionId, String newTitle) {
@@ -236,6 +256,7 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     private void initSections() {
+        mDefaultSections.put(R.string.title_search, MediaGroup.TYPE_SEARCH);
         mDefaultSections.put(R.string.header_notifications, MediaGroup.TYPE_NOTIFICATIONS);
         mDefaultSections.put(R.string.header_home, MediaGroup.TYPE_HOME);
         mDefaultSections.put(R.string.header_shorts, MediaGroup.TYPE_SHORTS);
@@ -304,6 +325,8 @@ public class SidebarService implements ProfileChangeListener {
 
         // Backward compatibility
         enableSection(MediaGroup.TYPE_SETTINGS, true);
+        // MOD: make sure the new TizenTube-style search tab exists on existing profiles
+        enableSection(MediaGroup.TYPE_SEARCH, true);
 
         cleanupPinnedItems();
     }

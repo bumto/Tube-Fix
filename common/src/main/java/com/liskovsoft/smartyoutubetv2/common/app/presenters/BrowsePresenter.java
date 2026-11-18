@@ -2,6 +2,7 @@ package com.liskovsoft.smartyoutubetv2.common.app.presenters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Pair;
 
@@ -26,6 +27,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.errors.PasswordError;
 import com.liskovsoft.smartyoutubetv2.common.app.models.errors.SignInError;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.service.VideoStateService.State;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.SearchPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.base.BasePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.VideoActionPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.dialogs.menu.ChannelUploadsMenuPresenter;
@@ -77,6 +79,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
     private long mLastUpdateTimeMs = -1;
     private int mBootSectionIndex;
     private int mBootstrapSectionId = -1;
+    private long mLastSearchTabOpenMs;
 
     private BrowsePresenter(Context context) {
         super(context);
@@ -186,6 +189,8 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         String country = LocaleUtility.getCurrentLocale(getContext()).getCountry();
         int uploadsType = getMainUIData().isUploadsOldLookEnabled() ? BrowseSection.TYPE_GRID : BrowseSection.TYPE_MULTI_GRID;
 
+        // MOD: TizenTube-style search tab in the sidebar
+        mSectionsMapping.put(MediaGroup.TYPE_SEARCH, new BrowseSection(MediaGroup.TYPE_SEARCH, getContext().getString(R.string.title_search), BrowseSection.TYPE_ERROR, android.R.drawable.ic_menu_search, false));
         mSectionsMapping.put(MediaGroup.TYPE_HOME, new BrowseSection(MediaGroup.TYPE_HOME, getContext().getString(R.string.header_home), BrowseSection.TYPE_ROW, R.drawable.icon_home, false));
         mSectionsMapping.put(MediaGroup.TYPE_SHORTS, new BrowseSection(MediaGroup.TYPE_SHORTS, getContext().getString(R.string.header_shorts), BrowseSection.TYPE_SHORTS_GRID, R.drawable.icon_shorts));
         mSectionsMapping.put(MediaGroup.TYPE_TRENDING, new BrowseSection(MediaGroup.TYPE_TRENDING, getContext().getString(R.string.header_trending), BrowseSection.TYPE_ROW, R.drawable.icon_trending));
@@ -203,7 +208,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         mSectionsMapping.put(MediaGroup.TYPE_HISTORY, new BrowseSection(MediaGroup.TYPE_HISTORY, getContext().getString(R.string.header_history), BrowseSection.TYPE_GRID, R.drawable.icon_history, true));
         mSectionsMapping.put(MediaGroup.TYPE_BLOCKED_CHANNELS,
                 new BrowseSection(MediaGroup.TYPE_BLOCKED_CHANNELS, getContext().getString(R.string.header_blocked_channels), BrowseSection.TYPE_GRID, R.drawable.icon_blocked_channels, false));
-        mSectionsMapping.put(MediaGroup.TYPE_USER_PLAYLISTS, new BrowseSection(MediaGroup.TYPE_USER_PLAYLISTS, getContext().getString(R.string.header_playlists), BrowseSection.TYPE_ROW, R.drawable.icon_playlist, false));
+        mSectionsMapping.put(MediaGroup.TYPE_USER_PLAYLISTS, new BrowseSection(MediaGroup.TYPE_USER_PLAYLISTS, getContext().getString(R.string.header_koleksi), BrowseSection.TYPE_ROW, R.drawable.icon_playlist, false));
         mSectionsMapping.put(MediaGroup.TYPE_NOTIFICATIONS, new BrowseSection(MediaGroup.TYPE_NOTIFICATIONS, getContext().getString(R.string.header_notifications), BrowseSection.TYPE_GRID, R.drawable.icon_notification, false));
         mSectionsMapping.put(MediaGroup.TYPE_PLAYBACK_QUEUE, new BrowseSection(MediaGroup.TYPE_PLAYBACK_QUEUE, getContext().getString(R.string.playback_queue_category_title), BrowseSection.TYPE_GRID, R.drawable.icon_queue, false));
 
@@ -492,6 +497,16 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
 
     @Override
     public void onSectionFocused(int sectionId) {
+        // MOD: TizenTube search tab — open search instead of loading a (non-existent) section.
+        if (sectionId == MediaGroup.TYPE_SEARCH) {
+            long now = SystemClock.elapsedRealtime();
+            if (now - mLastSearchTabOpenMs > 1500) {
+                mLastSearchTabOpenMs = now;
+                SearchPresenter.instance(getContext()).startSearch(null);
+            }
+            return;
+        }
+
         saveSelectedItems(); // save previous state
         mCurrentSection = findSectionById(sectionId);
         mCurrentVideo = null; // fast scroll through the sections (fix empty selected item)

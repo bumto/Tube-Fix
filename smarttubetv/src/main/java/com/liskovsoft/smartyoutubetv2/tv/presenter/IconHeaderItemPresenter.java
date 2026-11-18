@@ -1,6 +1,7 @@
 package com.liskovsoft.smartyoutubetv2.tv.presenter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -27,6 +28,8 @@ import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 public class IconHeaderItemPresenter extends RowHeaderPresenter {
     private static final String TAG = IconHeaderItemPresenter.class.getSimpleName();
+    private static final int FOCUSED_COLOR = Color.parseColor("#0F0F0F");
+    private static final int NORMAL_COLOR = Color.parseColor("#B0B0B0");
     private float mUnselectedAlpha;
     private final int mResId;
     private final String mIconUrl;
@@ -52,11 +55,17 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
 
         // MOD: YouTube TV style — show label when focused or rail expanded
         TextView labelView = view.findViewById(R.id.header_label);
+        ImageView iconView = view.findViewById(R.id.header_icon);
         view.setOnFocusChangeListener((v, hasFocus) -> {
             if (labelView != null) {
                 labelView.setVisibility(hasFocus
                         || androidx.leanback.app.BrowseSupportFragment.sPinnedHeadersExpanded
                         ? View.VISIBLE : View.INVISIBLE);
+                labelView.setTextColor(hasFocus ? FOCUSED_COLOR : NORMAL_COLOR);
+            }
+            // MOD: TizenTube style — dark icon on the white selected pill.
+            if (iconView != null) {
+                iconView.setColorFilter(hasFocus ? FOCUSED_COLOR : NORMAL_COLOR);
             }
         });
 
@@ -90,11 +99,13 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 Drawable icon = mResId > 0 ? ContextCompat.getDrawable(rootView.getContext(), mResId) : mDefaultIcon;
                 iconView.setImageDrawable(icon);
             }
+            iconView.setColorFilter(rootView.isFocused() ? FOCUSED_COLOR : NORMAL_COLOR);
         }
 
         TextView label = rootView.findViewById(R.id.header_label);
         if (label != null) {
             label.setText(headerItem.getName());
+            label.setTextColor(rootView.isFocused() ? FOCUSED_COLOR : NORMAL_COLOR);
             label.setVisibility(rootView.isFocused()
                     || androidx.leanback.app.BrowseSupportFragment.sPinnedHeadersExpanded
                     ? View.VISIBLE : View.INVISIBLE); // MOD

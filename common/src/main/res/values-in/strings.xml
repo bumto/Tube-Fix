@@ -8,6 +8,7 @@
     <string name="header_news">Berita</string>
     <string name="header_gaming">Game</string>
     <string name="header_playlists">Playlist</string>
+    <string name="header_koleksi">Koleksi</string>
     <string name="header_settings">Setelan</string>
     <string name="header_channels">Channel</string>
     <string name="subscriptions_signin_title">Lihat yang terbaru dari channel yang Anda sukai</string>
