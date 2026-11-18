@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- MOD: YouTube TV style rail item pill (white when focused) -->
+<!-- MOD: TizenTube style rail item pill (white when focused or selected) -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="14dp" />
+            <solid android:color="#F1F1F1" />
+        </shape>
+    </item>
+    <item android:state_selected="true">
         <shape android:shape="rectangle">
             <corners android:radius="14dp" />
             <solid android:color="#F1F1F1" />

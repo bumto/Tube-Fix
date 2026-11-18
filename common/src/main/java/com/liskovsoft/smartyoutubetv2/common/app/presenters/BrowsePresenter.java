@@ -203,6 +203,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
             mSectionsMapping.put(MediaGroup.TYPE_NEWS, new BrowseSection(MediaGroup.TYPE_NEWS, getContext().getString(R.string.header_news), BrowseSection.TYPE_ROW, R.drawable.icon_news));
         }
         mSectionsMapping.put(MediaGroup.TYPE_MUSIC, new BrowseSection(MediaGroup.TYPE_MUSIC, getContext().getString(R.string.header_music), BrowseSection.TYPE_ROW, R.drawable.icon_music));
+        mSectionsMapping.put(MediaGroup.TYPE_MOVIES, new BrowseSection(MediaGroup.TYPE_MOVIES, getContext().getString(R.string.header_film), BrowseSection.TYPE_ROW, R.drawable.ic_header_film));
         mSectionsMapping.put(MediaGroup.TYPE_CHANNEL_UPLOADS, new BrowseSection(MediaGroup.TYPE_CHANNEL_UPLOADS, getContext().getString(R.string.header_channels), uploadsType, R.drawable.icon_channels, false));
         mSectionsMapping.put(MediaGroup.TYPE_SUBSCRIPTIONS, new BrowseSection(MediaGroup.TYPE_SUBSCRIPTIONS, getContext().getString(R.string.header_subscriptions), BrowseSection.TYPE_GRID, R.drawable.icon_subscriptions, false));
         mSectionsMapping.put(MediaGroup.TYPE_HISTORY, new BrowseSection(MediaGroup.TYPE_HISTORY, getContext().getString(R.string.header_history), BrowseSection.TYPE_GRID, R.drawable.icon_history, true));
@@ -225,6 +226,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         mRowMapping.put(MediaGroup.TYPE_LIVE, getContentService().getLiveObserve());
         mRowMapping.put(MediaGroup.TYPE_NEWS, getContentService().getNewsObserve());
         mRowMapping.put(MediaGroup.TYPE_MUSIC, getContentService().getMusicObserve());
+        mRowMapping.put(MediaGroup.TYPE_MOVIES, getContentService().getSearchObserve("film"));
         mRowMapping.put(MediaGroup.TYPE_GAMING, getContentService().getGamingObserve());
         mRowMapping.put(MediaGroup.TYPE_USER_PLAYLISTS, getContentService().getPlaylistRowsObserve());
 
@@ -253,21 +255,6 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
                         mSections.add(section);
                     }
                 }
-            }
-        }
-
-        // MOD: ensure the search tab exists even on profiles with old sidebar data
-        boolean hasSearch = false;
-        for (BrowseSection section : mSections) {
-            if (section.getId() == MediaGroup.TYPE_SEARCH) {
-                hasSearch = true;
-                break;
-            }
-        }
-        if (!hasSearch) {
-            BrowseSection searchSection = mSectionsMapping.get(MediaGroup.TYPE_SEARCH);
-            if (searchSection != null) {
-                mSections.add(searchSection);
             }
         }
 

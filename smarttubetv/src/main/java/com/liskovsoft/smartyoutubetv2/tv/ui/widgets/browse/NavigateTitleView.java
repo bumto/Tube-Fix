@@ -150,7 +150,7 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
         }
 
         if (mIsSearchPillEnabled) {
-            mMicView.setVisibility(mSearchVisibility);
+            mMicView.setVisibility(View.GONE);
             mSearchPill.setVisibility(mSearchVisibility);
         }
 
@@ -232,7 +232,7 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
         mIsLanguageViewEnabled = mainUIData.isTopButtonEnabled(MainUIData.TOP_BUTTON_CHANGE_LANGUAGE);
 
         mSearchOrbView.setVisibility(mIsSearchOrbEnabled ? View.VISIBLE : View.GONE);
-        mMicView.setVisibility(mIsSearchPillEnabled ? View.VISIBLE : View.GONE);
+        mMicView.setVisibility(View.GONE);
         mSearchPill.setVisibility(mIsSearchPillEnabled ? View.VISIBLE : View.GONE);
         mAccountView.setVisibility(mIsAccountViewEnabled ? View.VISIBLE : View.GONE);
         mLanguageView.setVisibility(mIsLanguageViewEnabled ? View.VISIBLE : View.GONE);

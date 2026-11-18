@@ -34,7 +34,6 @@ public class SidebarService implements ProfileChangeListener {
     private final Set<Integer> mDisabledSidebarContents = new LinkedHashSet<>();
     private final static int RESERVED_ID = 100;
     private final static int[] DEFAULT_SIDEBAR_CONTENTS_ORDER = {
-            MediaGroup.TYPE_SEARCH,
             MediaGroup.TYPE_HOME,
             MediaGroup.TYPE_SUBSCRIPTIONS,
             MediaGroup.TYPE_USER_PLAYLISTS,
@@ -48,6 +47,7 @@ public class SidebarService implements ProfileChangeListener {
             MediaGroup.TYPE_HISTORY
     };
     private final static int[] DEFAULT_DISABLED_SIDEBAR_CONTENTS = {
+            MediaGroup.TYPE_SEARCH,
             MediaGroup.TYPE_NOTIFICATIONS,
             MediaGroup.TYPE_PLAYBACK_QUEUE,
             MediaGroup.TYPE_TRENDING,
@@ -343,7 +343,7 @@ public class SidebarService implements ProfileChangeListener {
 
         if (order != null) {
             for (int sectionId : order) {
-                if (!result.contains(sectionId)) {
+                if (sectionId != MediaGroup.TYPE_SEARCH && !result.contains(sectionId)) {
                     result.add(sectionId);
                 }
             }
@@ -356,7 +356,7 @@ public class SidebarService implements ProfileChangeListener {
         }
 
         for (int sectionId : mDefaultSections.values()) {
-            if (!result.contains(sectionId)) {
+            if (sectionId != MediaGroup.TYPE_SEARCH && !result.contains(sectionId)) {
                 result.add(sectionId);
             }
         }
@@ -410,6 +410,7 @@ public class SidebarService implements ProfileChangeListener {
                 mDisabledSidebarContents.add(sectionId);
             }
         }
+        mDisabledSidebarContents.add(MediaGroup.TYPE_SEARCH);
 
         transferOldPinnedItems();
         Helpers.removeIf(mPinnedItems, item -> mDisabledSidebarContents.contains(getSectionId(item)));
@@ -420,8 +421,7 @@ public class SidebarService implements ProfileChangeListener {
 
         // Backward compatibility
         enableSection(MediaGroup.TYPE_SETTINGS, true);
-        // MOD: make sure the new TizenTube-style search tab exists on existing profiles
-        enableSection(MediaGroup.TYPE_SEARCH, true);
+        enableSection(MediaGroup.TYPE_SEARCH, false);
 
         cleanupPinnedItems();
         persistState();

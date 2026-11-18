@@ -22,6 +22,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.liskovsoft.sharedutils.mylogger.Log;
+import com.liskovsoft.smartyoutubetv2.common.app.models.data.BrowseSection;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.SectionHeaderItem;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
@@ -29,7 +31,7 @@ import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 public class IconHeaderItemPresenter extends RowHeaderPresenter {
     private static final String TAG = IconHeaderItemPresenter.class.getSimpleName();
     private static final int FOCUSED_COLOR = Color.parseColor("#0F0F0F");
-    private static final int NORMAL_COLOR = Color.parseColor("#B0B0B0");
+    private static final int NORMAL_COLOR = Color.parseColor("#F1F1F1");
     private float mUnselectedAlpha;
     private final int mResId;
     private final String mIconUrl;
@@ -58,9 +60,7 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         ImageView iconView = view.findViewById(R.id.header_icon);
         view.setOnFocusChangeListener((v, hasFocus) -> {
             if (labelView != null) {
-                labelView.setVisibility(hasFocus
-                        || androidx.leanback.app.BrowseSupportFragment.sPinnedHeadersExpanded
-                        ? View.VISIBLE : View.INVISIBLE);
+                labelView.setVisibility(View.VISIBLE);
                 labelView.setTextColor(hasFocus ? FOCUSED_COLOR : NORMAL_COLOR);
             }
             // MOD: TizenTube style — dark icon on the white selected pill.
@@ -85,6 +85,10 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         View rootView = viewHolder.view;
         rootView.setFocusable(true);
 
+        BrowseSection currentSection = BrowsePresenter.instance(rootView.getContext()).getCurrentSection();
+        boolean isCurrentSection = currentSection != null && currentSection.getId() == headerItem.getId();
+        rootView.setSelected(isCurrentSection);
+
         ImageView iconView = rootView.findViewById(R.id.header_icon);
         if (iconView != null) {
             if (mIconUrl != null) {
@@ -99,16 +103,14 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 Drawable icon = mResId > 0 ? ContextCompat.getDrawable(rootView.getContext(), mResId) : mDefaultIcon;
                 iconView.setImageDrawable(icon);
             }
-            iconView.setColorFilter(rootView.isFocused() ? FOCUSED_COLOR : NORMAL_COLOR);
+            iconView.setColorFilter(rootView.isFocused() || isCurrentSection ? FOCUSED_COLOR : NORMAL_COLOR);
         }
 
         TextView label = rootView.findViewById(R.id.header_label);
         if (label != null) {
             label.setText(headerItem.getName());
-            label.setTextColor(rootView.isFocused() ? FOCUSED_COLOR : NORMAL_COLOR);
-            label.setVisibility(rootView.isFocused()
-                    || androidx.leanback.app.BrowseSupportFragment.sPinnedHeadersExpanded
-                    ? View.VISIBLE : View.INVISIBLE); // MOD
+            label.setTextColor(rootView.isFocused() || isCurrentSection ? FOCUSED_COLOR : NORMAL_COLOR);
+            label.setVisibility(View.VISIBLE);
         }
 
         // MOD: YouTube TV style rail — separator above the first item of a group

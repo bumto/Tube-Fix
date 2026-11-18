@@ -6,13 +6,6 @@
               android:orientation="horizontal"
               android:gravity="center_vertical">
 
-    <ImageView
-        android:id="@+id/search_pill_mic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/lb_ic_search_mic"
-        android:contentDescription="@null" />
-
     <TextView
         android:id="@+id/search_pill_hint"
         android:layout_width="wrap_content"
