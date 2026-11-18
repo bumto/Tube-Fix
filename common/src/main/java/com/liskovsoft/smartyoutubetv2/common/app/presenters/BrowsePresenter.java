@@ -60,6 +60,21 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 
 public class BrowsePresenter extends BasePresenter<BrowseView> implements SectionPresenter, VideoGroupPresenter, AccountChangeListener {
+    // MOD: TizenTube-style sidebar tab order
+    private static final int[] TIZEN_TAB_ORDER = {
+            MediaGroup.TYPE_SEARCH,
+            MediaGroup.TYPE_HOME,
+            MediaGroup.TYPE_SUBSCRIPTIONS,
+            MediaGroup.TYPE_USER_PLAYLISTS,
+            MediaGroup.TYPE_MUSIC,
+            MediaGroup.TYPE_MOVIES,
+            MediaGroup.TYPE_GAMING,
+            MediaGroup.TYPE_NEWS,
+            MediaGroup.TYPE_SPORTS,
+            MediaGroup.TYPE_SHORTS,
+            MediaGroup.TYPE_SETTINGS,
+            MediaGroup.TYPE_HISTORY
+    };
     private static final String TAG = BrowsePresenter.class.getSimpleName();
     @SuppressLint("StaticFieldLeak")
     private static BrowsePresenter sInstance;
@@ -256,6 +271,21 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
             }
         }
 
+        // MOD: ensure the search tab exists even on profiles with old sidebar data
+        boolean hasSearch = false;
+        for (BrowseSection section : mSections) {
+            if (section.getId() == MediaGroup.TYPE_SEARCH) {
+                hasSearch = true;
+                break;
+            }
+        }
+        if (!hasSearch) {
+            BrowseSection searchSection = mSectionsMapping.get(MediaGroup.TYPE_SEARCH);
+            if (searchSection != null) {
+                mSections.add(searchSection);
+            }
+        }
+
         // MOD: apply TizenTube-style tab order on startup
         sortSections();
     }
@@ -350,11 +380,18 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         initPasswordSection();
     }
 
+    private static int tizenRank(int sectionId) {
+        for (int i = 0; i < TIZEN_TAB_ORDER.length; i++) {
+            if (TIZEN_TAB_ORDER[i] == sectionId) {
+                return i;
+            }
+        }
+        return TIZEN_TAB_ORDER.length;
+    }
+
     private void sortSections() {
         // NOTE: Comparator.comparingInt API >= 24
-        Collections.sort(mSections, (o1, o2) -> {
-            return getSidebarService().getSectionIndex(o1.getId()) - getSidebarService().getSectionIndex(o2.getId());
-        });
+        Collections.sort(mSections, (o1, o2) -> tizenRank(o1.getId()) - tizenRank(o2.getId()));
     }
 
     public void updateChannelSorting() {
