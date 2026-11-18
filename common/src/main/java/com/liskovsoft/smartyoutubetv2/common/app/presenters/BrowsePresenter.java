@@ -255,6 +255,9 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
                 }
             }
         }
+
+        // MOD: apply TizenTube-style tab order on startup
+        sortSections();
     }
 
     private void initPinnedCallbacks() {
