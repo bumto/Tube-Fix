@@ -3,7 +3,7 @@
 <androidx.leanback.widget.NonOverlappingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="120dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center_horizontal">
@@ -19,13 +19,13 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:duplicateParentState="true"
         android:background="@drawable/header_pill_bg"
-        android:paddingStart="10dp"
+        android:paddingStart="14dp"
         android:paddingEnd="14dp"
         android:paddingTop="3dp"
         android:paddingBottom="3dp">
@@ -40,9 +40,9 @@
 
         <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.HeaderMarqueeTextViewCompat
             android:id="@+id/header_label"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:maxWidth="130dp"
+            android:layout_weight="1"
             android:layout_marginStart="8dp"
             android:duplicateParentState="true"
             android:gravity="center_vertical"
