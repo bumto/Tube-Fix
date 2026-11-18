@@ -27,8 +27,8 @@
         android:background="@drawable/header_pill_bg"
         android:paddingStart="10dp"
         android:paddingEnd="14dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp">
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp">
 
         <ImageView
             android:id="@+id/header_icon"
