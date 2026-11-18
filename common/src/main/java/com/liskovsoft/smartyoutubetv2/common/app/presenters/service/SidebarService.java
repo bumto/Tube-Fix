@@ -11,11 +11,14 @@ import com.liskovsoft.smartyoutubetv2.common.prefs.AppPrefs;
 import com.liskovsoft.smartyoutubetv2.common.prefs.AppPrefs.ProfileChangeListener;
 import com.liskovsoft.smartyoutubetv2.common.prefs.GeneralData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SidebarService implements ProfileChangeListener {
     @SuppressLint("StaticFieldLeak")
@@ -26,9 +29,11 @@ public class SidebarService implements ProfileChangeListener {
     private final AppPrefs mPrefs;
     private boolean mIsSettingsSectionEnabled;
     private int mBootSectionId;
+    // MOD: TizenTube-style persisted sidebar config
+    private List<Integer> mSidebarContentsOrder;
+    private final Set<Integer> mDisabledSidebarContents = new LinkedHashSet<>();
     private final static int RESERVED_ID = 100;
-    // MOD: TizenTube-style sidebar order
-    private final static int[] TIZEN_SECTION_ORDER = {
+    private final static int[] DEFAULT_SIDEBAR_CONTENTS_ORDER = {
             MediaGroup.TYPE_SEARCH,
             MediaGroup.TYPE_HOME,
             MediaGroup.TYPE_SUBSCRIPTIONS,
@@ -41,6 +46,12 @@ public class SidebarService implements ProfileChangeListener {
             MediaGroup.TYPE_SHORTS,
             MediaGroup.TYPE_SETTINGS,
             MediaGroup.TYPE_HISTORY
+    };
+    private final static int[] DEFAULT_DISABLED_SIDEBAR_CONTENTS = {
+            MediaGroup.TYPE_NOTIFICATIONS,
+            MediaGroup.TYPE_PLAYBACK_QUEUE,
+            MediaGroup.TYPE_TRENDING,
+            MediaGroup.TYPE_BLOCKED_CHANNELS
     };
 
     private SidebarService(Context context) {
@@ -87,6 +98,8 @@ public class SidebarService implements ProfileChangeListener {
 
     public void enableSection(int sectionId, boolean enabled) {
         if (enabled) {
+            mDisabledSidebarContents.remove(sectionId);
+
             if (sectionId == MediaGroup.TYPE_SETTINGS) {
                 mIsSettingsSectionEnabled = true; // prevent Settings lock
             }
@@ -115,6 +128,7 @@ public class SidebarService implements ProfileChangeListener {
                 mPinnedItems.add(index, item);
             }
         } else {
+            mDisabledSidebarContents.add(sectionId);
             Helpers.removeIf(mPinnedItems, item -> item == null || item.sectionId == sectionId);
         }
 
@@ -144,22 +158,53 @@ public class SidebarService implements ProfileChangeListener {
      * Contains sections and pinned items!
      */
     public boolean isSectionPinned(int sectionId) {
+        if (mDisabledSidebarContents.contains(sectionId)) {
+            return false;
+        }
+
         Video section = Helpers.findFirst(mPinnedItems, item -> getSectionId(item) == sectionId);
         return section != null; // by default enable all pinned items
     }
 
-    public int getSectionIndex(int sectionId) {
-        // MOD: keep the TizenTube tab order regardless of the stored sidebar preferences.
-        for (int i = 0; i < TIZEN_SECTION_ORDER.length; i++) {
-            if (TIZEN_SECTION_ORDER[i] == sectionId) {
-                return i;
-            }
+    public List<Integer> getSidebarContentsOrder() {
+        return Collections.unmodifiableList(mSidebarContentsOrder);
+    }
+
+    public void setSidebarContentsOrder(List<Integer> order) {
+        if (order == null) {
+            return;
         }
 
-        // Other sections and user pinned items go after the TizenTube tabs.
-        int index = findPinnedItemIndex(sectionId);
+        mSidebarContentsOrder = normalizeOrder(order);
+        persistState();
+    }
 
-        return index < 0 ? TIZEN_SECTION_ORDER.length + RESERVED_ID : TIZEN_SECTION_ORDER.length + index;
+    public Set<Integer> getDisabledSidebarContents() {
+        return Collections.unmodifiableSet(mDisabledSidebarContents);
+    }
+
+    public void setDisabledSidebarContents(Collection<Integer> sectionIds) {
+        mDisabledSidebarContents.clear();
+
+        if (sectionIds != null) {
+            mDisabledSidebarContents.addAll(sectionIds);
+        }
+
+        Helpers.removeIf(mPinnedItems, item -> mDisabledSidebarContents.contains(getSectionId(item)));
+        persistState();
+    }
+
+    public int getSectionIndex(int sectionId) {
+        int index = mSidebarContentsOrder.indexOf(sectionId);
+
+        if (index >= 0) {
+            return index;
+        }
+
+        // Unknown sections and user pinned items go after the configured tabs.
+        int pinnedIndex = findPinnedItemIndex(sectionId);
+
+        return pinnedIndex < 0 ? mSidebarContentsOrder.size() + RESERVED_ID : mSidebarContentsOrder.size() + pinnedIndex;
     }
 
     public void renameSection(int sectionId, String newTitle) {
@@ -188,10 +233,16 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     private boolean canShiftSection(int sectionId, int shift) {
+        int orderIndex = mSidebarContentsOrder.indexOf(sectionId);
+
+        if (orderIndex >= 0) {
+            return orderIndex + shift >= 0 && orderIndex + shift < mSidebarContentsOrder.size();
+        }
+
         int index = findPinnedItemIndex(sectionId);
 
         if (index != -1) {
-            return  index + shift >= 0 && index + shift < mPinnedItems.size();
+            return index + shift >= 0 && index + shift < mPinnedItems.size();
         }
 
         return false;
@@ -199,6 +250,16 @@ public class SidebarService implements ProfileChangeListener {
 
     private void shiftSection(int sectionId, int shift) {
         if (!canShiftSection(sectionId, shift)) {
+            return;
+        }
+
+        int orderIndex = mSidebarContentsOrder.indexOf(sectionId);
+
+        if (orderIndex >= 0) {
+            int targetIndex = orderIndex + shift;
+            mSidebarContentsOrder.set(orderIndex, mSidebarContentsOrder.get(targetIndex));
+            mSidebarContentsOrder.set(targetIndex, sectionId);
+            persistState();
             return;
         }
 
@@ -277,15 +338,36 @@ public class SidebarService implements ProfileChangeListener {
         mDefaultSections.put(R.string.header_settings, MediaGroup.TYPE_SETTINGS);
     }
 
+    private List<Integer> normalizeOrder(List<Integer> order) {
+        List<Integer> result = new ArrayList<>();
+
+        if (order != null) {
+            for (int sectionId : order) {
+                if (!result.contains(sectionId)) {
+                    result.add(sectionId);
+                }
+            }
+        }
+
+        for (int sectionId : DEFAULT_SIDEBAR_CONTENTS_ORDER) {
+            if (!result.contains(sectionId)) {
+                result.add(sectionId);
+            }
+        }
+
+        for (int sectionId : mDefaultSections.values()) {
+            if (!result.contains(sectionId)) {
+                result.add(sectionId);
+            }
+        }
+
+        return result;
+    }
+
     private void initPinnedItems() {
         for (int sectionId : mDefaultSections.values()) {
             // Hidden sections
-            enableSection(sectionId, !Helpers.equalsAny(sectionId, new int[] {
-                    MediaGroup.TYPE_NOTIFICATIONS,
-                    MediaGroup.TYPE_PLAYBACK_QUEUE,
-                    MediaGroup.TYPE_TRENDING,
-                    MediaGroup.TYPE_BLOCKED_CHANNELS
-            }));
+            enableSection(sectionId, !Helpers.equalsAny(sectionId, DEFAULT_DISABLED_SIDEBAR_CONTENTS));
         }
     }
 
@@ -317,7 +399,20 @@ public class SidebarService implements ProfileChangeListener {
         mBootSectionId = Helpers.parseInt(split, 1, MediaGroup.TYPE_HOME);
         mIsSettingsSectionEnabled = Helpers.parseBoolean(split, 2, true);
 
+        // MOD: TizenTube-style persisted tab order and hidden tabs.
+        mSidebarContentsOrder = normalizeOrder(Helpers.parseIntList(split, 3));
+        mDisabledSidebarContents.clear();
+
+        if (split.length > 4) {
+            mDisabledSidebarContents.addAll(Helpers.parseIntList(split, 4));
+        } else {
+            for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
+                mDisabledSidebarContents.add(sectionId);
+            }
+        }
+
         transferOldPinnedItems();
+        Helpers.removeIf(mPinnedItems, item -> mDisabledSidebarContents.contains(getSectionId(item)));
 
         if (mPinnedItems.isEmpty()) {
             initPinnedItems();
@@ -329,6 +424,7 @@ public class SidebarService implements ProfileChangeListener {
         enableSection(MediaGroup.TYPE_SEARCH, true);
 
         cleanupPinnedItems();
+        persistState();
     }
 
     private void transferOldPinnedItems() {
@@ -344,7 +440,13 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     public void persistState() {
-        mPrefs.setSidebarData(Helpers.mergeData(mPinnedItems, mBootSectionId, mIsSettingsSectionEnabled));
+        mPrefs.setSidebarData(Helpers.mergeData(
+                mPinnedItems,
+                mBootSectionId,
+                mIsSettingsSectionEnabled,
+                Helpers.mergeList(mSidebarContentsOrder),
+                Helpers.mergeList(new ArrayList<>(mDisabledSidebarContents))
+        ));
     }
 
     @Override
