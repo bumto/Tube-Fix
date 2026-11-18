@@ -50,6 +50,20 @@
             app:searchOrbIconColor="@color/orb_icon_color"
             android:visibility="gone" />
 
+        <!-- MOD: YouTube TV style account chip (avatar + name) -->
+        <TextView
+            android:id="@+id/account_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:maxWidth="160dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:textColor="@color/card_default_text"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
         <!-- MOD: YouTube TV style mic button -->
         <androidx.leanback.widget.SearchOrbView
             android:id="@+id/mic_orb"

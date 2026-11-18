@@ -307,6 +307,7 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
     public void removeAllSections() {
         mSections.clear();
         mSectionRowAdapter.clear();
+        updateGroupDividers();
     }
 
     @Override
@@ -420,6 +421,42 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
         } else {
             mSectionRowAdapter.add(index, pageRow);
         }
+
+        updateGroupDividers();
+    }
+
+    /**
+     * MOD: YouTube TV style rail — mark first section of each group so the
+     * icon presenter can draw a separator above it.
+     */
+    private void updateGroupDividers() {
+        if (mSectionRowAdapter == null) {
+            return;
+        }
+
+        int prevGroup = -1;
+
+        for (Object item : mSectionRowAdapter.unmodifiableList()) {
+            if (!(item instanceof PageRow)) {
+                continue;
+            }
+
+            HeaderItem headerItem = ((PageRow) item).getHeaderItem();
+
+            if (!(headerItem instanceof SectionHeaderItem)) {
+                continue;
+            }
+
+            SectionHeaderItem sectionHeaderItem = (SectionHeaderItem) headerItem;
+            int group = SectionHeaderItem.groupForType(sectionHeaderItem.getType());
+
+            sectionHeaderItem.setGroupStart(prevGroup != -1 && prevGroup != group);
+            prevGroup = group;
+        }
+
+        if (mSectionRowAdapter.size() > 0) {
+            mSectionRowAdapter.notifyArrayItemRangeChanged(0, mSectionRowAdapter.size());
+        }
     }
 
     private void removeHeader(BrowseSection header) {
@@ -435,6 +472,8 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
         if (foundHeader != null) {
             mSectionRowAdapter.remove(foundHeader);
         }
+
+        updateGroupDividers();
     }
 
     @Override

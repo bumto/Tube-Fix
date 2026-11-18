@@ -20,6 +20,7 @@ import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.SettingsCardPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.interfaces.SettingsSection;
 import com.liskovsoft.smartyoutubetv2.tv.ui.browse.video.GridFragmentHelper;
+import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.AppDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.common.LeanbackActivity;
 import com.liskovsoft.smartyoutubetv2.tv.ui.common.UriBackgroundManager;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.fragments.GridFragment;
@@ -82,6 +83,12 @@ public class SettingsGridFragment extends GridFragment implements SettingsSectio
     }
 
     @Override
+    public void onDestroy() {
+        AppDialogFragment.setTwoPaneEnabled(false);
+        super.onDestroy();
+    }
+
+    @Override
     public void clear() {
         if (mSettingsAdapter != null) {
             mSettingsAdapter.clear();
@@ -129,6 +136,9 @@ public class SettingsGridFragment extends GridFragment implements SettingsSectio
 
             if (item instanceof SettingsItem) {
                 String password = getGeneralData().getSettingsPassword();
+
+                // MOD: YouTube TV style — settings dialogs use the two-pane layout
+                AppDialogFragment.setTwoPaneEnabled(true);
 
                 if (password == null) {
                     ((SettingsItem) item).onClick.run();

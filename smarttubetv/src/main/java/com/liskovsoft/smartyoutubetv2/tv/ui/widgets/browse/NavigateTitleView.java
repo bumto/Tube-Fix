@@ -65,6 +65,7 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
     private SearchOrbView mSearchOrbView;
     private SearchOrbView mMicView;
     private SearchPillView mSearchPill;
+    private TextView mAccountName;
     private boolean mInitDone;
     private int mFlags = FULL_VIEW_VISIBLE;
     private int mIconWidth;
@@ -164,6 +165,9 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
 
         if (mIsAccountViewEnabled) {
             mAccountView.setVisibility(mSearchVisibility);
+            if (mAccountName != null) {
+                mAccountName.setVisibility(mSearchVisibility);
+            }
         }
 
         if (mIsLanguageViewEnabled) {
@@ -205,6 +209,7 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
         mSearchOrbView = findViewById(R.id.title_orb);
 
         mAccountView = findViewById(R.id.account_orb);
+        mAccountName = findViewById(R.id.account_name);
         mAccountView.setOnOrbClickedListener(v -> AccountSelectionPresenter.instance(getContext()).nextAccountOrDialog());
         mAccountView.setOnOrbLongClickedListener(v -> {
             AccountSettingsPresenter.instance(getContext()).show();
@@ -311,7 +316,14 @@ public class NavigateTitleView extends TitleView implements OnDataChange, Accoun
             String accountName = current.getName() != null ? current.getName() : current.getEmail();
             //TooltipCompatHandler.setTooltipText(mAccountView, Utils.updateTooltip(getContext(), accountName));
             TooltipCompatHandler.setTooltipText(mAccountView, accountName);
+            if (mAccountName != null && accountName != null) {
+                mAccountName.setText(accountName);
+                mAccountName.setVisibility(mSearchVisibility);
+            }
         } else {
+            if (mAccountName != null) {
+                mAccountName.setVisibility(View.GONE);
+            }
             Colors orbColors = mAccountView.getOrbColors();
             mAccountView.setOrbColors(new Colors(orbColors.color, orbColors.brightColor, ContextCompat.getColor(getContext(), R.color.orb_icon_color)));
             mAccountView.setOrbIcon(ContextCompat.getDrawable(getContext(), R.drawable.browse_title_account));

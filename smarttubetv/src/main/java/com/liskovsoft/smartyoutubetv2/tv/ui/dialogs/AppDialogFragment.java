@@ -27,6 +27,7 @@ import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.CommentsPreference;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.CommentsPreferenceDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.RadioListPreferenceDialogFragment;
+import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.twopane.TwoPaneSettingsView;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.StringListPreference;
 import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.other.StringListPreferenceDialogFragment;
 import com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.preference.LeanbackListPreferenceDialogFragment;
@@ -43,6 +44,17 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
     private boolean mIsOverlay;
     private boolean mIsPaused;
     private int mId;
+
+    // MOD: two-pane layout for settings dialogs (set by SettingsGridFragment)
+    private static boolean sTwoPaneEnabled;
+
+    public static void setTwoPaneEnabled(boolean enabled) {
+        sTwoPaneEnabled = enabled;
+    }
+
+    public static boolean isTwoPaneEnabled() {
+        return sTwoPaneEnabled;
+    }
 
     private static final String PREFERENCE_FRAGMENT_TAG =
             "androidx.leanback.preference.LeanbackSettingsFragment.PREFERENCE_FRAGMENT";
@@ -305,7 +317,15 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = super.onCreateView(inflater, container, savedInstanceState);
+            // Initialize preference internals first (keeps lifecycle hooks valid).
+            View preferenceView = super.onCreateView(inflater, container, savedInstanceState);
+
+            if (sTwoPaneEnabled && getContext() != null) {
+                // MOD: YouTube TV style settings — categories left, options right.
+                return new TwoPaneSettingsView(getContext(), mCategories, mTitle);
+            }
+
+            View view = preferenceView;
 
             if (mIsTransparent && view != null) {
                 // Enable transparent shadow outline on parent (R.id.settings_preference_fragment_container)

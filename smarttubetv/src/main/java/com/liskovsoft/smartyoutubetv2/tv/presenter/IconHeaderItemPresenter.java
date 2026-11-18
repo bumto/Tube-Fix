@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.ui.browse.SectionHeaderItem;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 public class IconHeaderItemPresenter extends RowHeaderPresenter {
@@ -97,6 +98,14 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
             label.setVisibility(rootView.isFocused()
                     || androidx.leanback.app.BrowseSupportFragment.sPinnedHeadersExpanded
                     ? View.VISIBLE : View.INVISIBLE); // MOD
+        }
+
+        // MOD: YouTube TV style rail — separator above the first item of a group
+        View divider = rootView.findViewById(R.id.header_divider);
+        if (divider != null) {
+            divider.setVisibility(headerItem instanceof SectionHeaderItem
+                    && ((SectionHeaderItem) headerItem).isGroupStart()
+                    ? View.VISIBLE : View.GONE);
         }
     }
 

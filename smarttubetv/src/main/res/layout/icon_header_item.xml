@@ -11,6 +11,16 @@
     android:paddingBottom="10dp"
     android:background="@drawable/header_pill_bg">
 
+    <!-- MOD: group separator (visible on first item of each rail group) -->
+    <View
+        android:id="@+id/header_divider"
+        android:layout_width="48dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
+        android:background="#33FFFFFF"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/header_icon"
         android:layout_width="26dp"
