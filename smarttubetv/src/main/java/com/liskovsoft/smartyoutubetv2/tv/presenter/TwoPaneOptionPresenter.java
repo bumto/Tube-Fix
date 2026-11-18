@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.Presenter;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionItem;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.twopane.TwoPaneSettingsView;
 
 /**
  * MOD: two-pane settings — right column option row.
@@ -18,10 +19,12 @@ import com.liskovsoft.smartyoutubetv2.tv.R;
 public class TwoPaneOptionPresenter extends Presenter {
     private final int mDefaultTextColor;
     private final int mMetaTextColor;
+    private final TwoPaneSettingsView.Listener mListener;
 
-    public TwoPaneOptionPresenter(Context context) {
+    public TwoPaneOptionPresenter(Context context, TwoPaneSettingsView.Listener listener) {
         mDefaultTextColor = ContextCompat.getColor(context, R.color.card_default_text);
         mMetaTextColor = ContextCompat.getColor(context, R.color.card_meta_text);
+        mListener = listener;
     }
 
     @Override
@@ -60,7 +63,12 @@ public class TwoPaneOptionPresenter extends Presenter {
             title.setTextColor(color);
             description.setTextColor(metaColor);
             check.setTextColor(color);
-            title.setSelected(hasFocus);
+        });
+
+        root.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onItem(optionItem);
+            }
         });
 
         boolean focused = root.isFocused();

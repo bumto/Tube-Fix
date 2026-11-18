@@ -30,6 +30,10 @@ import java.util.List;
  * Left: option categories. Right: options of the selected category.
  */
 public class TwoPaneSettingsView extends LinearLayout {
+    public interface Listener {
+        void onItem(Object item);
+    }
+
     private final List<OptionCategory> mCategories = new ArrayList<>();
     private final ArrayObjectAdapter mCategoryAdapter;
     private final ArrayObjectAdapter mOptionAdapter;
@@ -83,32 +87,20 @@ public class TwoPaneSettingsView extends LinearLayout {
         mOptionGrid.setFocusable(false);
         row.addView(mOptionGrid);
 
-        mCategoryAdapter = new ArrayObjectAdapter(new TwoPaneCategoryPresenter(context));
-        ItemBridgeAdapter categoryBridge = new ItemBridgeAdapter(mCategoryAdapter);
-        mCategoryGrid.setAdapter(categoryBridge);
-
-        mOptionAdapter = new ArrayObjectAdapter(new TwoPaneOptionPresenter(context));
-        ItemBridgeAdapter optionBridge = new ItemBridgeAdapter(mOptionAdapter);
-        mOptionGrid.setAdapter(optionBridge);
-
-        categoryBridge.setOnItemViewSelectedListener((itemViewHolder, item, rowViewHolder, row1) -> {
+        mCategoryAdapter = new ArrayObjectAdapter(new TwoPaneCategoryPresenter(context, item -> {
             if (item instanceof OptionCategory) {
                 selectCategory((OptionCategory) item);
             }
-        });
+        }));
 
-        categoryBridge.setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row1) -> {
-            if (item instanceof OptionCategory) {
-                selectCategory((OptionCategory) item);
-                focusOptions();
-            }
-        });
-
-        optionBridge.setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row1) -> {
+        mOptionAdapter = new ArrayObjectAdapter(new TwoPaneOptionPresenter(context, item -> {
             if (item instanceof OptionItem && mSelectedCategory != null) {
                 onOptionClicked(mSelectedCategory, (OptionItem) item);
             }
-        });
+        }));
+
+        mCategoryGrid.setAdapter(new ItemBridgeAdapter(mCategoryAdapter));
+        mOptionGrid.setAdapter(new ItemBridgeAdapter(mOptionAdapter));
 
         mCategoryAdapter.addAll(0, mCategories);
 

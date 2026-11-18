@@ -10,15 +10,18 @@ import androidx.core.content.ContextCompat;
 import androidx.leanback.widget.Presenter;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionCategory;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.twopane.TwoPaneSettingsView;
 
 /**
  * MOD: two-pane settings — left column category row.
  */
 public class TwoPaneCategoryPresenter extends Presenter {
     private final int mDefaultTextColor;
+    private final TwoPaneSettingsView.Listener mListener;
 
-    public TwoPaneCategoryPresenter(Context context) {
+    public TwoPaneCategoryPresenter(Context context, TwoPaneSettingsView.Listener listener) {
         mDefaultTextColor = ContextCompat.getColor(context, R.color.card_default_text);
+        mListener = listener;
     }
 
     @Override
@@ -35,12 +38,21 @@ public class TwoPaneCategoryPresenter extends Presenter {
 
         OptionCategory category = (OptionCategory) item;
 
-        title.setText(com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.twopane.TwoPaneSettingsView.getCategoryTitle(category));
+        title.setText(TwoPaneSettingsView.getCategoryTitle(category));
 
         viewHolder.view.setOnFocusChangeListener((v, hasFocus) -> {
             title.setTextColor(hasFocus ? Color.BLACK : mDefaultTextColor);
-            title.setSelected(hasFocus);
+            if (hasFocus && mListener != null) {
+                mListener.onItem(category);
+            }
         });
+
+        viewHolder.view.setOnClickListener(v -> {
+            if (mListener != null) {
+                mListener.onItem(category);
+            }
+        });
+
         title.setTextColor(viewHolder.view.isFocused() ? Color.BLACK : mDefaultTextColor);
     }
 
