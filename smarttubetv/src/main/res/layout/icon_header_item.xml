@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- MOD: YouTube TV style rail item (icon + label stacked) -->
+<!-- MOD: TizenTube style rail item (icon + label side by side) -->
 <androidx.leanback.widget.NonOverlappingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="88dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:background="@drawable/header_pill_bg">
+    android:gravity="center_horizontal">
 
     <!-- MOD: group separator (visible on first item of each rail group) -->
     <View
@@ -17,33 +14,45 @@
         android:layout_width="56dp"
         android:layout_height="2dp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:background="#4DFFFFFF"
         android:visibility="gone" />
 
-    <ImageView
-        android:id="@+id/header_icon"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        app:tint="@color/header_icon_tint"
-        android:contentDescription="@string/header_icon" />
-
-    <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.HeaderMarqueeTextViewCompat
-        android:id="@+id/header_label"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:duplicateParentState="true"
+        android:background="@drawable/header_pill_bg"
+        android:paddingStart="10dp"
+        android:paddingEnd="14dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
 
-        android:gravity="center"
-        android:singleLine="true"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:ellipsize="marquee"
-        android:scrollHorizontally="true"
+        <ImageView
+            android:id="@+id/header_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:duplicateParentState="true"
+            app:tint="@color/header_icon_tint"
+            android:contentDescription="@string/header_icon" />
 
-        android:textColor="@color/header_label_color"
-        android:textSize="13sp"
-        style="@style/TextAppearance.Leanback.Header"/>
+        <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.HeaderMarqueeTextViewCompat
+            android:id="@+id/header_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="130dp"
+            android:layout_marginStart="8dp"
+            android:duplicateParentState="true"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="end"
+
+            android:textColor="@color/header_label_color"
+            android:textSize="15sp"
+            style="@style/TextAppearance.Leanback.Header"/>
+
+    </LinearLayout>
 
 </androidx.leanback.widget.NonOverlappingLinearLayout>
