@@ -3,10 +3,13 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.dialogs;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.leanback.preference.LeanbackPreferenceFragment;
@@ -302,6 +305,8 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
         private AppPreferenceManager mManager;
         private CharSequence mTitle;
         private boolean mIsTransparent;
+        private FrameLayout mExpandedContainer;
+        private FrameLayout.LayoutParams mOriginalContainerParams;
 
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
@@ -322,6 +327,7 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
 
             if (sTwoPaneEnabled && getContext() != null) {
                 // MOD: YouTube TV style settings — categories left, options right.
+                expandSettingsContainer();
                 return new TwoPaneSettingsView(getContext(), mCategories, mTitle);
             }
 
@@ -335,6 +341,55 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
             }
 
             return view;
+        }
+
+        @Override
+        public void onDestroyView() {
+            restoreSettingsContainer();
+            super.onDestroyView();
+        }
+
+        private void expandSettingsContainer() {
+            // MOD: the leanback settings container occupies only the right half of the screen.
+            // A two-pane layout needs the full width, so expand it while the two-pane view is shown.
+            View root = getParentFragment() != null ? getParentFragment().getView() : null;
+            if (root == null) {
+                return;
+            }
+
+            View container = root.findViewById(R.id.settings_preference_fragment_container);
+            if (!(container instanceof FrameLayout) || container == mExpandedContainer) {
+                return;
+            }
+
+            ViewGroup.LayoutParams lp = container.getLayoutParams();
+            if (!(lp instanceof FrameLayout.LayoutParams)) {
+                return;
+            }
+
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) lp;
+            mExpandedContainer = (FrameLayout) container;
+            mOriginalContainerParams = new FrameLayout.LayoutParams(params);
+
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            params.leftMargin = 0;
+            params.rightMargin = 0;
+            params.gravity = Gravity.START | Gravity.TOP;
+            container.setLayoutParams(params);
+            container.setBackgroundColor(Color.parseColor("#0F0F0F"));
+            container.bringToFront();
+        }
+
+        private void restoreSettingsContainer() {
+            if (mExpandedContainer == null || mOriginalContainerParams == null) {
+                return;
+            }
+
+            mExpandedContainer.setLayoutParams(mOriginalContainerParams);
+            mExpandedContainer.setBackgroundColor(Color.TRANSPARENT);
+            mExpandedContainer = null;
+            mOriginalContainerParams = null;
         }
 
         private void initPrefs() {

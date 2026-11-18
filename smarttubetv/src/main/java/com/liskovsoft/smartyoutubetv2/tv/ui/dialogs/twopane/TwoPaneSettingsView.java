@@ -45,7 +45,8 @@ public class TwoPaneSettingsView extends LinearLayout {
         super(context);
 
         setOrientation(VERTICAL);
-        setBackgroundColor(Color.TRANSPARENT);
+        setBackgroundColor(Color.parseColor("#0F0F0F"));
+        setPadding(0, dp(32), 0, 0);
 
         if (categories != null) {
             for (OptionCategory category : categories) {
