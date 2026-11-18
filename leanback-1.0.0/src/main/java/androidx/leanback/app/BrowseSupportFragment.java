@@ -1504,8 +1504,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
             View wrapper = list.getChildAt(i);
             View label = wrapper == null ? null : wrapper.findViewById(R.id.header_label);
             if (label != null) {
-                label.setVisibility(sPinnedHeadersExpanded || wrapper.isFocused()
-                        ? View.VISIBLE : View.INVISIBLE);
+                label.setVisibility(View.VISIBLE);
             }
         }
     }

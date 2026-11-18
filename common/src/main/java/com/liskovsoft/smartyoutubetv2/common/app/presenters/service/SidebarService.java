@@ -317,7 +317,6 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     private void initSections() {
-        mDefaultSections.put(R.string.title_search, MediaGroup.TYPE_SEARCH);
         mDefaultSections.put(R.string.header_notifications, MediaGroup.TYPE_NOTIFICATIONS);
         mDefaultSections.put(R.string.header_home, MediaGroup.TYPE_HOME);
         mDefaultSections.put(R.string.header_shorts, MediaGroup.TYPE_SHORTS);
@@ -328,6 +327,7 @@ public class SidebarService implements ProfileChangeListener {
         mDefaultSections.put(R.string.header_gaming, MediaGroup.TYPE_GAMING);
         mDefaultSections.put(R.string.header_news, MediaGroup.TYPE_NEWS);
         mDefaultSections.put(R.string.header_music, MediaGroup.TYPE_MUSIC);
+        mDefaultSections.put(R.string.header_film, MediaGroup.TYPE_MOVIES);
         mDefaultSections.put(R.string.header_channels, MediaGroup.TYPE_CHANNEL_UPLOADS);
         mDefaultSections.put(R.string.header_subscriptions, MediaGroup.TYPE_SUBSCRIPTIONS);
         mDefaultSections.put(R.string.header_history, MediaGroup.TYPE_HISTORY);
