@@ -484,6 +484,13 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
     }
 
     @Override
+    public void refreshHeaders() {
+        if (mSectionRowAdapter.size() > 0) {
+            mSectionRowAdapter.notifyArrayItemRangeChanged(0, mSectionRowAdapter.size());
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         mSectionFragmentFactory.cleanup();
 

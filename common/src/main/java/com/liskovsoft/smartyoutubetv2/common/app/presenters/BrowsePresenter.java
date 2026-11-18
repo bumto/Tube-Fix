@@ -515,6 +515,9 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         mCurrentSection = findSectionById(sectionId);
         mCurrentVideo = null; // fast scroll through the sections (fix empty selected item)
         updateCurrentSection();
+        if (getView() != null) {
+            getView().refreshHeaders();
+        }
         restoreSelectedItems(); // Don't place anywhere else
     }
 
