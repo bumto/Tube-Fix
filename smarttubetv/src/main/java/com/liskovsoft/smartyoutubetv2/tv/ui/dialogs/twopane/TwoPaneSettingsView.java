@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.leanback.widget.ArrayObjectAdapter;
+import androidx.leanback.widget.ItemBridgeAdapter;
 import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.OnItemViewSelectedListener;
 import androidx.leanback.widget.Presenter;
@@ -83,25 +84,27 @@ public class TwoPaneSettingsView extends LinearLayout {
         row.addView(mOptionGrid);
 
         mCategoryAdapter = new ArrayObjectAdapter(new TwoPaneCategoryPresenter(context));
-        mCategoryGrid.setAdapter(mCategoryAdapter);
+        ItemBridgeAdapter categoryBridge = new ItemBridgeAdapter(mCategoryAdapter);
+        mCategoryGrid.setAdapter(categoryBridge);
 
         mOptionAdapter = new ArrayObjectAdapter(new TwoPaneOptionPresenter(context));
-        mOptionGrid.setAdapter(mOptionAdapter);
+        ItemBridgeAdapter optionBridge = new ItemBridgeAdapter(mOptionAdapter);
+        mOptionGrid.setAdapter(optionBridge);
 
-        mCategoryGrid.setOnItemViewSelectedListener((itemViewHolder, item, rowViewHolder, row1) -> {
+        categoryBridge.setOnItemViewSelectedListener((itemViewHolder, item, rowViewHolder, row1) -> {
             if (item instanceof OptionCategory) {
                 selectCategory((OptionCategory) item);
             }
         });
 
-        mCategoryGrid.setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row1) -> {
+        categoryBridge.setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row1) -> {
             if (item instanceof OptionCategory) {
                 selectCategory((OptionCategory) item);
                 focusOptions();
             }
         });
 
-        mOptionGrid.setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row1) -> {
+        optionBridge.setOnItemViewClickedListener((itemViewHolder, item, rowViewHolder, row1) -> {
             if (item instanceof OptionItem && mSelectedCategory != null) {
                 onOptionClicked(mSelectedCategory, (OptionItem) item);
             }
@@ -165,7 +168,8 @@ public class TwoPaneSettingsView extends LinearLayout {
                 clicked.onSelect(true);
                 break;
             case OptionCategory.TYPE_LONG_TEXT:
-                MessageHelpers.showMessage(getContext(), clicked.getTitle());
+                CharSequence text = clicked.getTitle();
+                MessageHelpers.showMessage(getContext(), text != null ? text.toString() : "");
                 return;
             case OptionCategory.TYPE_RADIO_LIST:
                 for (OptionItem item : category.options) {
