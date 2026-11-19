@@ -50,7 +50,7 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mDefaultIcon = new ColorDrawable(ContextCompat.getColor(viewGroup.getContext(), R.color.lb_grey));
 
-        // MOD: inflate with parent so layout_width (88dp) is honored — grid uses
+        // MOD: inflate with parent so the rail item width is honored — grid uses
         // UNSPECIFIED spec for secondary size, so match_parent would collapse to 0
         View view = inflater.inflate(R.layout.icon_header_item, viewGroup, false);
         view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.

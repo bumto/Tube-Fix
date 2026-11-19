@@ -35,22 +35,29 @@ public class SidebarService implements ProfileChangeListener {
     private final static int RESERVED_ID = 100;
     private final static int[] DEFAULT_SIDEBAR_CONTENTS_ORDER = {
             MediaGroup.TYPE_HOME,
-            MediaGroup.TYPE_SUBSCRIPTIONS,
-            MediaGroup.TYPE_USER_PLAYLISTS,
+            MediaGroup.TYPE_SHORTS,
             MediaGroup.TYPE_MUSIC,
+            MediaGroup.TYPE_LIVE,
+            MediaGroup.TYPE_SUBSCRIPTIONS,
+            MediaGroup.TYPE_SETTINGS
+    };
+    private final static int[] DEFAULT_DISABLED_SIDEBAR_CONTENTS = {
+            MediaGroup.TYPE_SEARCH,
+            MediaGroup.TYPE_RECOMMENDED,
+            MediaGroup.TYPE_HISTORY,
+            MediaGroup.TYPE_USER_PLAYLISTS,
             MediaGroup.TYPE_MOVIES,
             MediaGroup.TYPE_GAMING,
             MediaGroup.TYPE_NEWS,
             MediaGroup.TYPE_SPORTS,
-            MediaGroup.TYPE_SHORTS,
-            MediaGroup.TYPE_SETTINGS,
-            MediaGroup.TYPE_HISTORY
-    };
-    private final static int[] DEFAULT_DISABLED_SIDEBAR_CONTENTS = {
-            MediaGroup.TYPE_SEARCH,
             MediaGroup.TYPE_NOTIFICATIONS,
-            MediaGroup.TYPE_PLAYBACK_QUEUE,
+            MediaGroup.TYPE_SUGGESTIONS,
+            MediaGroup.TYPE_CHANNEL,
+            MediaGroup.TYPE_CHANNEL_UPLOADS,
+            MediaGroup.TYPE_KIDS_HOME,
             MediaGroup.TYPE_TRENDING,
+            MediaGroup.TYPE_MY_VIDEOS,
+            MediaGroup.TYPE_PLAYBACK_QUEUE,
             MediaGroup.TYPE_BLOCKED_CHANNELS
     };
 
@@ -186,9 +193,10 @@ public class SidebarService implements ProfileChangeListener {
     public void setDisabledSidebarContents(Collection<Integer> sectionIds) {
         mDisabledSidebarContents.clear();
 
-        if (sectionIds != null) {
-            mDisabledSidebarContents.addAll(sectionIds);
+        for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
+            mDisabledSidebarContents.add(sectionId);
         }
+        mDisabledSidebarContents.add(MediaGroup.TYPE_SEARCH);
 
         Helpers.removeIf(mPinnedItems, item -> mDisabledSidebarContents.contains(getSectionId(item)));
         persistState();
@@ -341,24 +349,8 @@ public class SidebarService implements ProfileChangeListener {
     private List<Integer> normalizeOrder(List<Integer> order) {
         List<Integer> result = new ArrayList<>();
 
-        if (order != null) {
-            for (int sectionId : order) {
-                if (sectionId != MediaGroup.TYPE_SEARCH && !result.contains(sectionId)) {
-                    result.add(sectionId);
-                }
-            }
-        }
-
         for (int sectionId : DEFAULT_SIDEBAR_CONTENTS_ORDER) {
-            if (!result.contains(sectionId)) {
-                result.add(sectionId);
-            }
-        }
-
-        for (int sectionId : mDefaultSections.values()) {
-            if (sectionId != MediaGroup.TYPE_SEARCH && !result.contains(sectionId)) {
-                result.add(sectionId);
-            }
+            result.add(sectionId);
         }
 
         return result;
@@ -396,33 +388,27 @@ public class SidebarService implements ProfileChangeListener {
         String[] split = Helpers.splitData(data);
 
         mPinnedItems = Helpers.parseList(split, 0, Video::fromString);
-        mBootSectionId = Helpers.parseInt(split, 1, MediaGroup.TYPE_HOME);
-        mIsSettingsSectionEnabled = Helpers.parseBoolean(split, 2, true);
 
-        // MOD: TizenTube-style persisted tab order and hidden tabs.
-        mSidebarContentsOrder = normalizeOrder(Helpers.parseIntList(split, 3));
+        if (mPinnedItems == null) {
+            mPinnedItems = new ArrayList<>();
+        }
+
+        mBootSectionId = Helpers.parseInt(split, 1, MediaGroup.TYPE_HOME);
+        mIsSettingsSectionEnabled = true;
+
+        // MOD: fixed TizenTube rail — ignore persisted order, hidden tabs and pinned channels
+        mSidebarContentsOrder = normalizeOrder(null);
         mDisabledSidebarContents.clear();
 
-        if (split.length > 4) {
-            mDisabledSidebarContents.addAll(Helpers.parseIntList(split, 4));
-        } else {
-            for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
-                mDisabledSidebarContents.add(sectionId);
-            }
-        }
-        mDisabledSidebarContents.add(MediaGroup.TYPE_SEARCH);
-
-        transferOldPinnedItems();
-        Helpers.removeIf(mPinnedItems, item -> mDisabledSidebarContents.contains(getSectionId(item)));
-
-        if (mPinnedItems.isEmpty()) {
-            initPinnedItems();
+        for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
+            mDisabledSidebarContents.add(sectionId);
         }
 
-        // Backward compatibility
-        enableSection(MediaGroup.TYPE_SETTINGS, true);
-        enableSection(MediaGroup.TYPE_MOVIES, true);
-        enableSection(MediaGroup.TYPE_SEARCH, false);
+        mPinnedItems.clear();
+
+        for (int sectionId : DEFAULT_SIDEBAR_CONTENTS_ORDER) {
+            enableSection(sectionId, true);
+        }
 
         cleanupPinnedItems();
         persistState();

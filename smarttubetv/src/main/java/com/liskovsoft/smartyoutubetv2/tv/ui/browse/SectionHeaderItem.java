@@ -30,7 +30,7 @@ public class SectionHeaderItem extends HeaderItem {
             case MediaGroup.TYPE_NEWS:
             case MediaGroup.TYPE_SPORTS:
             case MediaGroup.TYPE_LIVE:
-            case MediaGroup.TYPE_SHORTS:
+            case MediaGroup.TYPE_SUBSCRIPTIONS:
             case MediaGroup.TYPE_KIDS_HOME:
             case MediaGroup.TYPE_BLOCKED_CHANNELS:
             case MediaGroup.TYPE_NOTIFICATIONS:
