@@ -2,6 +2,7 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.browse;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -93,6 +94,12 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
+
+        View headersRoot = root.findViewById(androidx.leanback.R.id.browse_headers_root);
+        if (headersRoot != null) {
+            headersRoot.setTranslationY(TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, -9, getResources().getDisplayMetrics()));
+        }
 
         mProgressBarManager.setRootView((ViewGroup) root);
 
