@@ -53,14 +53,13 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         View view = inflater.inflate(R.layout.icon_header_item, viewGroup, false);
         view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.
 
-        // MOD: YouTube TV style — show label when focused or rail expanded
+        // MOD: YouTube TV style — labels stay visible in collapsed and expanded rail
         TextView labelView = view.findViewById(R.id.header_label);
         ImageView iconView = view.findViewById(R.id.header_icon);
+        if (labelView != null) {
+            labelView.setVisibility(View.VISIBLE);
+        }
         view.setOnFocusChangeListener((v, hasFocus) -> {
-            if (labelView != null) {
-                labelView.setVisibility(View.VISIBLE);
-            }
-
             updateIconTint(iconView, hasFocus, v.isSelected());
         });
         updateIconTint(iconView, false, false);
@@ -107,6 +106,7 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         if (label != null) {
             label.setText(headerItem.getName());
             label.setVisibility(View.VISIBLE);
+            label.requestLayout();
         }
 
         // MOD: YouTube TV style rail — separator above the first item of a group
