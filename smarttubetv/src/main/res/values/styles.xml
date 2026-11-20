@@ -8,6 +8,24 @@
     <attr name="cardProgressStyle" format="reference"/>
     <attr name="appLogo" format="reference"/>
 
+    <!-- TizenTube theme tokens -->
+    <attr name="ttRailPillColor" format="color|reference"/>
+    <attr name="ttRailTextColor" format="color|reference"/>
+    <attr name="ttRailTextFocusedColor" format="color|reference"/>
+    <attr name="ttRailDividerColor" format="color|reference"/>
+    <attr name="ttSearchPillColor" format="color|reference"/>
+    <attr name="ttSearchPillFocusedColor" format="color|reference"/>
+    <attr name="ttSearchPillStrokeColor" format="color|reference"/>
+    <attr name="ttTwoPaneBackgroundColor" format="color|reference"/>
+    <attr name="ttTwoPaneItemFocusedColor" format="color|reference"/>
+    <attr name="ttTwoPaneItemSelectedColor" format="color|reference"/>
+    <attr name="ttTwoPaneTextColor" format="color|reference"/>
+    <attr name="ttTwoPaneTextFocusedColor" format="color|reference"/>
+    <attr name="ttTwoPaneTextSelectedColor" format="color|reference"/>
+    <attr name="ttToastBackgroundColor" format="color|reference"/>
+    <attr name="ttToastTextColor" format="color|reference"/>
+    <attr name="ttFocusOutlineColor" format="color|reference"/>
+
     <!-- Increase spacing between items in GridView -->
     <style name="GridViewStyle" parent="Widget.Leanback.GridItems.VerticalGridView">
         <item name="android:horizontalSpacing">@dimen/grid_item_horizontal_spacing</item>
@@ -65,6 +83,9 @@
         <!-- Fix 'screen off' mode on some devices? -->
         <item tools:targetApi="18" name="android:windowOverscan">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="ttToastBackgroundColor">@color/tt_toast_background</item>
+        <item name="ttToastTextColor">@color/tt_toast_text</item>
+        <item name="ttFocusOutlineColor">@color/tt_focus_outline</item>
     </style>
     <style name="App.Theme.Leanback.Browse" parent="Theme.Leanback.Browse">
         <item name="android:windowBackground">@color/shelf_background_dark</item>
@@ -88,6 +109,16 @@
         <!-- Fix 'screen off' mode on some devices? -->
         <item tools:targetApi="18" name="android:windowOverscan">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="ttRailPillColor">@color/tt_rail_pill</item>
+        <item name="ttRailTextColor">@color/tt_rail_text</item>
+        <item name="ttRailTextFocusedColor">@color/tt_rail_text_focused</item>
+        <item name="ttRailDividerColor">@color/tt_rail_divider</item>
+        <item name="ttSearchPillColor">@color/tt_search_pill</item>
+        <item name="ttSearchPillFocusedColor">@color/tt_search_pill_focused</item>
+        <item name="ttSearchPillStrokeColor">@color/tt_search_stroke</item>
+        <item name="ttToastBackgroundColor">@color/tt_toast_background</item>
+        <item name="ttToastTextColor">@color/tt_toast_text</item>
+        <item name="ttFocusOutlineColor">@color/tt_focus_outline</item>
     </style>
     <style name="App.Theme.Leanback.GuidedStep" parent="Theme.Leanback.GuidedStep">
         <item name="android:windowBackground">@color/shelf_background_dark</item>
@@ -114,6 +145,15 @@
         <item name="android:windowFullscreen">true</item>
         <!-- Overlay bottom bar (can't hide it from styles) -->
         <item tools:targetApi="19" name="android:windowTranslucentNavigation">true</item>
+        <item name="ttTwoPaneBackgroundColor">@color/tt_background</item>
+        <item name="ttTwoPaneItemFocusedColor">@color/tt_two_pane_item_focused</item>
+        <item name="ttTwoPaneItemSelectedColor">@color/tt_two_pane_item_selected</item>
+        <item name="ttTwoPaneTextColor">@color/tt_two_pane_text</item>
+        <item name="ttTwoPaneTextFocusedColor">@color/tt_two_pane_text_focused</item>
+        <item name="ttTwoPaneTextSelectedColor">@color/tt_two_pane_text_selected</item>
+        <item name="ttToastBackgroundColor">@color/tt_toast_background</item>
+        <item name="ttToastTextColor">@color/tt_toast_text</item>
+        <item name="ttFocusOutlineColor">@color/tt_focus_outline</item>
     </style>
     <!-- Give ability to override style for different api -->
     <style name="App.Theme.Leanback.Preferences" parent="App.Theme.Leanback.Preferences.Base" />
@@ -268,4 +308,81 @@
         <item name="cardSelectedBackground">@color/card_selected_background_white_grey</item>
     </style>
     <!--  End Color scheme: Dark Blue (OLED)  -->
+
+    <!--  Color scheme: TizenTube  -->
+    <style name="App.Theme.TizenTube.Player" parent="App.Theme.Leanback.Player">
+        <item name="android:windowBackground">@color/tt_background</item>
+        <item name="shelfBackground">@color/tt_background</item>
+        <item name="cardDefaultBackground">@color/tt_surface</item>
+        <item name="cardSelectedBackground">@color/tt_rail_pill</item>
+        <item name="cardProgressStyle">?android:attr/progressBarStyleHorizontal</item>
+        <item name="playbackProgressPrimaryColor">@color/fastlane_background</item>
+        <item name="playbackProgressSecondaryColor">@color/light_red</item>
+        <item name="playbackControlsIconHighlightColor">@color/fastlane_background</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/fastlane_background</item>
+        <item name="ttToastBackgroundColor">@color/tt_toast_background</item>
+        <item name="ttToastTextColor">@color/tt_toast_text</item>
+        <item name="ttFocusOutlineColor">@color/tt_focus_outline</item>
+    </style>
+    <style name="App.Theme.TizenTube.Browse" parent="App.Theme.Leanback.Browse">
+        <item name="android:windowBackground">@color/tt_background</item>
+        <item name="brandColor">@color/tt_background</item>
+        <item name="brandAccentColor">@color/fastlane_background</item>
+        <item name="shelfBackground">@color/tt_background</item>
+        <item name="cardDefaultBackground">@color/tt_surface</item>
+        <item name="cardSelectedBackground">@color/tt_rail_pill</item>
+        <item name="appLogo">@mipmap/app_logo</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/fastlane_background</item>
+        <item name="ttRailPillColor">@color/tt_rail_pill</item>
+        <item name="ttRailTextColor">@color/tt_rail_text</item>
+        <item name="ttRailTextFocusedColor">@color/tt_rail_text_focused</item>
+        <item name="ttRailDividerColor">@color/tt_rail_divider</item>
+        <item name="ttSearchPillColor">@color/tt_search_pill</item>
+        <item name="ttSearchPillFocusedColor">@color/tt_search_pill_focused</item>
+        <item name="ttSearchPillStrokeColor">@color/tt_search_stroke</item>
+        <item name="ttToastBackgroundColor">@color/tt_toast_background</item>
+        <item name="ttToastTextColor">@color/tt_toast_text</item>
+        <item name="ttFocusOutlineColor">@color/tt_focus_outline</item>
+    </style>
+    <style name="App.Theme.TizenTube.Preferences" parent="App.Theme.Leanback.Preferences">
+        <item name="android:colorPrimary" tools:targetApi="21">@color/tt_background</item>
+        <item name="android:colorAccent" tools:targetApi="21">@color/fastlane_background</item>
+        <item name="ttTwoPaneBackgroundColor">@color/tt_background</item>
+        <item name="ttTwoPaneItemFocusedColor">@color/tt_two_pane_item_focused</item>
+        <item name="ttTwoPaneItemSelectedColor">@color/tt_two_pane_item_selected</item>
+        <item name="ttTwoPaneTextColor">@color/tt_two_pane_text</item>
+        <item name="ttTwoPaneTextFocusedColor">@color/tt_two_pane_text_focused</item>
+        <item name="ttTwoPaneTextSelectedColor">@color/tt_two_pane_text_selected</item>
+        <item name="ttToastBackgroundColor">@color/tt_toast_background</item>
+        <item name="ttToastTextColor">@color/tt_toast_text</item>
+        <item name="ttFocusOutlineColor">@color/tt_focus_outline</item>
+    </style>
+    <style name="App.Theme.TizenTube.GuidedStep" parent="App.Theme.Leanback.GuidedStep">
+        <item name="android:windowBackground">@color/tt_background</item>
+        <item name="shelfBackground">@color/tt_background</item>
+    </style>
+    <!--  End Color scheme: TizenTube  -->
+
+    <!--  Color scheme: TizenTube (OLED)  -->
+    <style name="App.Theme.TizenTube.OLED.Player" parent="App.Theme.TizenTube.Player">
+        <item name="android:windowBackground">@color/tt_background_pure_black</item>
+        <item name="shelfBackground">@color/tt_background_pure_black</item>
+        <item name="cardDefaultBackground">@color/tt_surface_pure_black</item>
+    </style>
+    <style name="App.Theme.TizenTube.OLED.Browse" parent="App.Theme.TizenTube.Browse">
+        <item name="android:windowBackground">@color/tt_background_pure_black</item>
+        <item name="brandColor">@color/tt_background_pure_black</item>
+        <item name="shelfBackground">@color/tt_background_pure_black</item>
+        <item name="cardDefaultBackground">@color/tt_surface_pure_black</item>
+        <item name="ttSearchPillColor">@color/tt_search_pill_pure_black</item>
+        <item name="ttSearchPillFocusedColor">@color/tt_search_pill_focused</item>
+    </style>
+    <style name="App.Theme.TizenTube.OLED.Preferences" parent="App.Theme.TizenTube.Preferences">
+        <item name="ttTwoPaneBackgroundColor">@color/tt_background_pure_black</item>
+    </style>
+    <style name="App.Theme.TizenTube.OLED.GuidedStep" parent="App.Theme.TizenTube.GuidedStep">
+        <item name="android:windowBackground">@color/tt_background_pure_black</item>
+        <item name="shelfBackground">@color/tt_background_pure_black</item>
+    </style>
+    <!--  End Color scheme: TizenTube (OLED)  -->
 </resources>

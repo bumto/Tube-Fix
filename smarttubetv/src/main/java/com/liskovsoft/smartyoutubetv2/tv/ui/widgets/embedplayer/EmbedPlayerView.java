@@ -206,6 +206,11 @@ public class EmbedPlayerView extends PlayerView implements PlaybackView {
     }
 
     @Override
+    public void showToast(CharSequence message) {
+
+    }
+
+    @Override
     public void setVideo(Video item) {
         mVideo = item;
 

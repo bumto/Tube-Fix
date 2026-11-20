@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -388,7 +389,15 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
             params.rightMargin = 0;
             params.gravity = Gravity.START | Gravity.TOP;
             container.setLayoutParams(params);
-            container.setBackgroundColor(Color.parseColor("#0F0F0F"));
+
+            TypedValue background = new TypedValue();
+            int backgroundColor = Color.parseColor("#0F0F0F");
+
+            if (container.getContext().getTheme().resolveAttribute(R.attr.ttTwoPaneBackgroundColor, background, true)) {
+                backgroundColor = background.data;
+            }
+
+            container.setBackgroundColor(backgroundColor);
             container.bringToFront();
         }
 

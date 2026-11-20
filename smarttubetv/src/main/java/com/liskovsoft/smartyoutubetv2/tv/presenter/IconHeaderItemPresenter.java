@@ -1,9 +1,9 @@
 package com.liskovsoft.smartyoutubetv2.tv.presenter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +30,6 @@ import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 public class IconHeaderItemPresenter extends RowHeaderPresenter {
     private static final String TAG = IconHeaderItemPresenter.class.getSimpleName();
-    private static final int FOCUSED_COLOR = Color.parseColor("#0F0F0F");
-    private static final int NORMAL_COLOR = Color.parseColor("#F1F1F1");
     private float mUnselectedAlpha;
     private final int mResId;
     private final String mIconUrl;
@@ -61,13 +59,11 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         view.setOnFocusChangeListener((v, hasFocus) -> {
             if (labelView != null) {
                 labelView.setVisibility(View.VISIBLE);
-                labelView.setTextColor(hasFocus ? FOCUSED_COLOR : NORMAL_COLOR);
             }
-            // MOD: TizenTube style — dark icon on the white selected pill.
-            if (iconView != null) {
-                iconView.setColorFilter(hasFocus ? FOCUSED_COLOR : NORMAL_COLOR);
-            }
+
+            updateIconTint(iconView, hasFocus, v.isSelected());
         });
+        updateIconTint(iconView, false, false);
 
         return new ViewHolder(view);
     }
@@ -103,13 +99,13 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 Drawable icon = mResId > 0 ? ContextCompat.getDrawable(rootView.getContext(), mResId) : mDefaultIcon;
                 iconView.setImageDrawable(icon);
             }
-            iconView.setColorFilter(rootView.isFocused() || isCurrentSection ? FOCUSED_COLOR : NORMAL_COLOR);
+
+            updateIconTint(iconView, rootView.isFocused(), isCurrentSection);
         }
 
         TextView label = rootView.findViewById(R.id.header_label);
         if (label != null) {
             label.setText(headerItem.getName());
-            label.setTextColor(rootView.isFocused() || isCurrentSection ? FOCUSED_COLOR : NORMAL_COLOR);
             label.setVisibility(View.VISIBLE);
         }
 
@@ -120,6 +116,29 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                     && ((SectionHeaderItem) headerItem).isGroupStart()
                     ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private static void updateIconTint(ImageView iconView, boolean focused, boolean selected) {
+        if (iconView == null) {
+            return;
+        }
+
+        Context context = iconView.getContext();
+        int color = focused || selected
+                ? resolveThemeColor(context, R.attr.ttRailTextFocusedColor, ContextCompat.getColor(context, R.color.tt_rail_text_focused))
+                : resolveThemeColor(context, R.attr.ttRailTextColor, ContextCompat.getColor(context, R.color.tt_rail_text));
+
+        iconView.setColorFilter(color);
+    }
+
+    private static int resolveThemeColor(Context context, int attr, int fallback) {
+        TypedValue value = new TypedValue();
+
+        if (context.getTheme().resolveAttribute(attr, value, true)) {
+            return value.data;
+        }
+
+        return fallback;
     }
 
     @Override

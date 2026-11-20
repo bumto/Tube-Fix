@@ -421,6 +421,18 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
                 "App.Theme.Leanback.Blue.OLED.Browse",
                 "App.Theme.Leanback.Blue.Preferences",
                 mContext));
+        mColorSchemes.add(new ColorScheme(
+                R.string.color_scheme_tizentube,
+                "App.Theme.TizenTube.Player",
+                "App.Theme.TizenTube.Browse",
+                "App.Theme.TizenTube.Preferences",
+                mContext));
+        mColorSchemes.add(new ColorScheme(
+                R.string.color_scheme_tizentube_oled,
+                "App.Theme.TizenTube.OLED.Player",
+                "App.Theme.TizenTube.OLED.Browse",
+                "App.Theme.TizenTube.OLED.Preferences",
+                mContext));
     }
 
     private void restoreState() {

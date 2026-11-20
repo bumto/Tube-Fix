@@ -193,12 +193,17 @@ public class SidebarService implements ProfileChangeListener {
     public void setDisabledSidebarContents(Collection<Integer> sectionIds) {
         mDisabledSidebarContents.clear();
 
-        for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
-            mDisabledSidebarContents.add(sectionId);
+        if (sectionIds != null) {
+            mDisabledSidebarContents.addAll(sectionIds);
+        } else {
+            for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
+                mDisabledSidebarContents.add(sectionId);
+            }
         }
+
         mDisabledSidebarContents.add(MediaGroup.TYPE_SEARCH);
 
-        Helpers.removeIf(mPinnedItems, item -> mDisabledSidebarContents.contains(getSectionId(item)));
+        syncPinnedSections();
         persistState();
     }
 
@@ -349,8 +354,18 @@ public class SidebarService implements ProfileChangeListener {
     private List<Integer> normalizeOrder(List<Integer> order) {
         List<Integer> result = new ArrayList<>();
 
+        if (order != null) {
+            for (int sectionId : order) {
+                if (sectionId != -1 && !result.contains(sectionId)) {
+                    result.add(sectionId);
+                }
+            }
+        }
+
         for (int sectionId : DEFAULT_SIDEBAR_CONTENTS_ORDER) {
-            result.add(sectionId);
+            if (!result.contains(sectionId)) {
+                result.add(sectionId);
+            }
         }
 
         return result;
@@ -382,6 +397,21 @@ public class SidebarService implements ProfileChangeListener {
         });
     }
 
+    private void syncPinnedSections() {
+        mDisabledSidebarContents.remove(MediaGroup.TYPE_SETTINGS);
+
+        Helpers.removeIf(mPinnedItems, item -> item == null || (item.sectionId != -1
+                && mDisabledSidebarContents.contains(item.sectionId)));
+
+        for (int sectionId : DEFAULT_SIDEBAR_CONTENTS_ORDER) {
+            if (!mDisabledSidebarContents.contains(sectionId) && findPinnedItemIndex(sectionId) == -1) {
+                Video item = new Video();
+                item.sectionId = sectionId;
+                mPinnedItems.add(item);
+            }
+        }
+    }
+
     private void restoreState() {
         String data = mPrefs.getSidebarData();
 
@@ -396,19 +426,23 @@ public class SidebarService implements ProfileChangeListener {
         mBootSectionId = Helpers.parseInt(split, 1, MediaGroup.TYPE_HOME);
         mIsSettingsSectionEnabled = true;
 
-        // MOD: fixed TizenTube rail — ignore persisted order, hidden tabs and pinned channels
-        mSidebarContentsOrder = normalizeOrder(null);
+        // MOD: restore persisted rail order and hidden tabs while keeping TizenTube defaults.
+        List<Integer> savedOrder = split != null && split.length > 3 ? Helpers.parseIntList(split, 3) : null;
+        mSidebarContentsOrder = normalizeOrder(savedOrder != null && !savedOrder.isEmpty() ? savedOrder : null);
+
         mDisabledSidebarContents.clear();
+        List<Integer> savedDisabled = split != null && split.length > 4 ? Helpers.parseIntList(split, 4) : null;
 
-        for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
-            mDisabledSidebarContents.add(sectionId);
+        if (savedDisabled == null) {
+            for (int sectionId : DEFAULT_DISABLED_SIDEBAR_CONTENTS) {
+                mDisabledSidebarContents.add(sectionId);
+            }
+        } else {
+            mDisabledSidebarContents.addAll(savedDisabled);
         }
+        mDisabledSidebarContents.add(MediaGroup.TYPE_SEARCH);
 
-        mPinnedItems.clear();
-
-        for (int sectionId : DEFAULT_SIDEBAR_CONTENTS_ORDER) {
-            enableSection(sectionId, true);
-        }
+        syncPinnedSections();
 
         cleanupPinnedItems();
         persistState();

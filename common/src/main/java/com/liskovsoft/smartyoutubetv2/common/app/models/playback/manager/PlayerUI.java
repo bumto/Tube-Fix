@@ -37,4 +37,5 @@ public interface PlayerUI {
     void showProgressBar(boolean show);
     void setSeekBarSegments(List<SeekBarSegment> segments);
     void updateEndingTime();
+    void showToast(CharSequence message);
 }

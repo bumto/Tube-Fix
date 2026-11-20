@@ -3,6 +3,7 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.twopane;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import androidx.leanback.widget.VerticalGridView;
 import com.liskovsoft.sharedutils.helpers.MessageHelpers;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionCategory;
 import com.liskovsoft.smartyoutubetv2.common.app.models.playback.ui.OptionItem;
+import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.TwoPaneCategoryPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.TwoPaneOptionPresenter;
 
@@ -31,7 +33,7 @@ import java.util.List;
  */
 public class TwoPaneSettingsView extends LinearLayout {
     public interface Listener {
-        void onItem(Object item);
+        void onItem(Object item, boolean clicked);
     }
 
     private final List<OptionCategory> mCategories = new ArrayList<>();
@@ -45,7 +47,7 @@ public class TwoPaneSettingsView extends LinearLayout {
         super(context);
 
         setOrientation(VERTICAL);
-        setBackgroundColor(Color.parseColor("#0F0F0F"));
+        setBackgroundColor(resolveThemeColor(context, R.attr.ttTwoPaneBackgroundColor, Color.parseColor("#0F0F0F")));
         setPadding(0, dp(32), 0, 0);
 
         if (categories != null) {
@@ -58,7 +60,7 @@ public class TwoPaneSettingsView extends LinearLayout {
 
         TextView titleView = new TextView(context);
         titleView.setText(title);
-        titleView.setTextColor(Color.WHITE);
+        titleView.setTextColor(resolveThemeColor(context, R.attr.ttTwoPaneTextColor, Color.WHITE));
         titleView.setTextSize(22);
         titleView.setTypeface(titleView.getTypeface(), android.graphics.Typeface.BOLD);
         titleView.setPadding(dp(48), dp(24), dp(48), dp(16));
@@ -88,13 +90,17 @@ public class TwoPaneSettingsView extends LinearLayout {
         mOptionGrid.setFocusable(false);
         row.addView(mOptionGrid);
 
-        mCategoryAdapter = new ArrayObjectAdapter(new TwoPaneCategoryPresenter(context, item -> {
+        mCategoryAdapter = new ArrayObjectAdapter(new TwoPaneCategoryPresenter(context, (item, clicked) -> {
             if (item instanceof OptionCategory) {
                 selectCategory((OptionCategory) item);
-            }
-        }));
 
-        mOptionAdapter = new ArrayObjectAdapter(new TwoPaneOptionPresenter(context, item -> {
+                if (clicked) {
+                    focusOptions();
+                }
+            }
+        }, category -> category == mSelectedCategory));
+
+        mOptionAdapter = new ArrayObjectAdapter(new TwoPaneOptionPresenter(context, (item, clicked) -> {
             if (item instanceof OptionItem && mSelectedCategory != null) {
                 onOptionClicked(mSelectedCategory, (OptionItem) item);
             }
@@ -143,6 +149,8 @@ public class TwoPaneSettingsView extends LinearLayout {
         if (category != null && category.options != null) {
             mOptionAdapter.addAll(0, category.options);
         }
+
+        mCategoryAdapter.notifyArrayItemRangeChanged(0, mCategoryAdapter.size());
     }
 
     private void focusOptions() {
@@ -157,6 +165,7 @@ public class TwoPaneSettingsView extends LinearLayout {
     private void onOptionClicked(OptionCategory category, OptionItem clicked) {
         switch (category.type) {
             case OptionCategory.TYPE_SINGLE_BUTTON:
+            case OptionCategory.TYPE_STRING_LIST:
             case OptionCategory.TYPE_COMMENTS:
                 clicked.onSelect(true);
                 break;
@@ -203,5 +212,15 @@ public class TwoPaneSettingsView extends LinearLayout {
 
     private int dp(int value) {
         return Math.round(getResources().getDisplayMetrics().density * value);
+    }
+
+    private static int resolveThemeColor(Context context, int attr, int fallback) {
+        TypedValue value = new TypedValue();
+
+        if (context.getTheme().resolveAttribute(attr, value, true)) {
+            return value.data;
+        }
+
+        return fallback;
     }
 }

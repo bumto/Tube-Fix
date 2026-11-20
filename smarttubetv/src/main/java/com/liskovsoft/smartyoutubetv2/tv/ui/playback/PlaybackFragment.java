@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -123,6 +124,7 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
     private Boolean mIsControlsShownPreviously;
     private Video mPendingFocus;
     private String mSelectedVideoId;
+    private Runnable mToastHideRunnable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1337,6 +1339,39 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
         if (mDebugInfoManager != null) {
             mDebugInfoManager.show(show);
         }
+    }
+
+    @Override
+    public void showToast(CharSequence message) {
+        View root = getView();
+
+        if (root == null || TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        TextView toast = root.findViewById(R.id.tt_player_toast);
+
+        if (toast == null) {
+            return;
+        }
+
+        if (mToastHideRunnable != null) {
+            toast.removeCallbacks(mToastHideRunnable);
+        }
+        toast.animate().cancel();
+
+        toast.setText(message);
+        toast.setVisibility(View.VISIBLE);
+        toast.setAlpha(0f);
+        toast.animate().alpha(1f).setDuration(120).start();
+
+        mToastHideRunnable = () -> toast.animate()
+                .alpha(0f)
+                .setDuration(220)
+                .withEndAction(() -> toast.setVisibility(View.GONE))
+                .start();
+
+        toast.postDelayed(mToastHideRunnable, 1600);
     }
 
     @Override

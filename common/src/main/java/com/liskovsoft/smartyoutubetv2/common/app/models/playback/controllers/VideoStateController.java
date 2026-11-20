@@ -40,6 +40,7 @@ public class VideoStateController extends BasePlayerController {
     @Nullable
     private Boolean mRestoreLiveEdge;
     private long mSleepTimerStartMs;
+    private float mLastSpeed = 1.0f;
 
     @Override
     public void onInit() {
@@ -300,6 +301,17 @@ public class VideoStateController extends BasePlayerController {
         }
 
         getPlayerData().setSpeed(getVideo().channelId, speed);
+
+        if (getPlayer() != null && !Helpers.floatEquals(mLastSpeed, speed)) {
+            getPlayer().showToast(formatSpeed(speed));
+        }
+
+        mLastSpeed = speed;
+    }
+
+    private String formatSpeed(float speed) {
+        long rounded = Math.round(speed);
+        return Helpers.floatEquals(speed, rounded) ? rounded + "x" : speed + "x";
     }
 
     @Override
@@ -623,16 +635,24 @@ public class VideoStateController extends BasePlayerController {
         }
 
         // Speed
+        float speed;
+
         if (liveEnd || isMusicVideo()) {
-            getPlayer().setSpeed(1.0f);
+            speed = 1.0f;
         } else {
             State state = getStateService().getByVideoId(item.videoId);
-            float speed = getPlayerData().getSpeed(item.channelId);
-            getPlayer().setSpeed(
-                    state != null && getPlayerData().isSpeedPerVideoEnabled() ? state.speed :
-                            getPlayerData().isAllSpeedEnabled() || item.channelId != null ? speed : 1.0f
-            );
+
+            if (state != null && getPlayerData().isSpeedPerVideoEnabled()) {
+                speed = state.speed;
+            } else if (getPlayerData().isAllSpeedEnabled() || item.channelId != null) {
+                speed = getPlayerData().getSpeed(item.channelId);
+            } else {
+                speed = 1.0f;
+            }
         }
+
+        mLastSpeed = speed;
+        getPlayer().setSpeed(speed);
     }
 
     public void blockPlay(boolean block) {

@@ -3,6 +3,7 @@ package com.liskovsoft.smartyoutubetv2.tv.presenter;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,17 @@ import com.liskovsoft.smartyoutubetv2.tv.ui.dialogs.twopane.TwoPaneSettingsView;
  */
 public class TwoPaneOptionPresenter extends Presenter {
     private final int mDefaultTextColor;
+    private final int mFocusedTextColor;
     private final int mMetaTextColor;
+    private final int mMetaFocusedTextColor;
     private final TwoPaneSettingsView.Listener mListener;
 
     public TwoPaneOptionPresenter(Context context, TwoPaneSettingsView.Listener listener) {
-        mDefaultTextColor = ContextCompat.getColor(context, R.color.card_default_text);
+        mDefaultTextColor = resolveThemeColor(context, R.attr.ttTwoPaneTextColor,
+                ContextCompat.getColor(context, R.color.card_default_text));
+        mFocusedTextColor = resolveThemeColor(context, R.attr.ttTwoPaneTextFocusedColor, Color.BLACK);
         mMetaTextColor = ContextCompat.getColor(context, R.color.card_meta_text);
+        mMetaFocusedTextColor = resolveThemeColor(context, R.attr.ttTwoPaneTextFocusedColor, Color.BLACK);
         mListener = listener;
     }
 
@@ -58,8 +64,8 @@ public class TwoPaneOptionPresenter extends Presenter {
         check.setVisibility(selected ? View.VISIBLE : View.GONE);
 
         root.setOnFocusChangeListener((v, hasFocus) -> {
-            int color = hasFocus ? Color.BLACK : mDefaultTextColor;
-            int metaColor = hasFocus ? Color.BLACK : mMetaTextColor;
+            int color = hasFocus ? mFocusedTextColor : mDefaultTextColor;
+            int metaColor = hasFocus ? mMetaFocusedTextColor : mMetaTextColor;
             title.setTextColor(color);
             description.setTextColor(metaColor);
             check.setTextColor(color);
@@ -67,14 +73,24 @@ public class TwoPaneOptionPresenter extends Presenter {
 
         root.setOnClickListener(v -> {
             if (mListener != null) {
-                mListener.onItem(optionItem);
+                mListener.onItem(optionItem, true);
             }
         });
 
         boolean focused = root.isFocused();
-        title.setTextColor(focused ? Color.BLACK : mDefaultTextColor);
-        description.setTextColor(focused ? Color.BLACK : mMetaTextColor);
-        check.setTextColor(focused ? Color.BLACK : mDefaultTextColor);
+        title.setTextColor(focused ? mFocusedTextColor : mDefaultTextColor);
+        description.setTextColor(focused ? mMetaFocusedTextColor : mMetaTextColor);
+        check.setTextColor(focused ? mFocusedTextColor : mDefaultTextColor);
+    }
+
+    private static int resolveThemeColor(Context context, int attr, int fallback) {
+        TypedValue value = new TypedValue();
+
+        if (context.getTheme().resolveAttribute(attr, value, true)) {
+            return value.data;
+        }
+
+        return fallback;
     }
 
     @Override

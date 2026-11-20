@@ -743,8 +743,6 @@ public class PlayerUIController extends BasePlayerController {
                     return true; // don't show ui
                 case PlayerData.OK_TOGGLE_SPEED:
                     getMainController().onButtonClicked(R.id.action_video_speed, getPlayer().getButtonState(R.id.action_video_speed));
-                    float speed = getPlayerData().getSpeed();
-                    MessageHelpers.showMessage(getContext(), String.format("%sx", speed));
                     return true;
             }
         }

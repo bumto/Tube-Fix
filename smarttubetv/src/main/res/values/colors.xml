@@ -73,4 +73,26 @@
     <color name="lb_speech_orb_not_recording">@color/orb_color</color>
     <color name="lb_speech_orb_not_recording_pulsed">@color/orb_bright_color</color>
     <color name="lb_speech_orb_not_recording_icon">@color/orb_icon_color</color>
+
+    <!-- TizenTube theme pack -->
+    <color name="tt_background">#0F0F0F</color>
+    <color name="tt_background_pure_black">#000000</color>
+    <color name="tt_surface">#212121</color>
+    <color name="tt_surface_pure_black">#000000</color>
+    <color name="tt_rail_text">#B0B0B0</color>
+    <color name="tt_rail_text_focused">#0F0F0F</color>
+    <color name="tt_rail_pill">#F1F1F1</color>
+    <color name="tt_rail_divider">#3F3F3F</color>
+    <color name="tt_search_pill">#1F1F1F</color>
+    <color name="tt_search_pill_pure_black">#0A0A0A</color>
+    <color name="tt_search_pill_focused">#3A3A3A</color>
+    <color name="tt_search_stroke">#E6FFFFFF</color>
+    <color name="tt_two_pane_item_focused">#FFFFFF</color>
+    <color name="tt_two_pane_item_selected">#1FFFFFFF</color>
+    <color name="tt_two_pane_text">#FFFFFF</color>
+    <color name="tt_two_pane_text_focused">#0F0F0F</color>
+    <color name="tt_two_pane_text_selected">#FFFFFF</color>
+    <color name="tt_toast_background">#CC0F0F0F</color>
+    <color name="tt_toast_text">#FFFFFF</color>
+    <color name="tt_focus_outline">#E6FFFFFF</color>
 </resources>
