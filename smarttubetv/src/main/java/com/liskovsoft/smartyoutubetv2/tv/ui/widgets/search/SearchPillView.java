@@ -5,7 +5,9 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 
 /**
@@ -36,6 +38,8 @@ public class SearchPillView extends FrameLayout {
         setClickable(true);
         TextView hintText = findViewById(R.id.search_pill_hint);
         hintText.setText(R.string.action_search);
+        ImageView keyboardIcon = findViewById(R.id.search_pill_keyboard);
+        keyboardIcon.setColorFilter(ContextCompat.getColor(context, R.color.card_meta_text));
     }
 
     @Override

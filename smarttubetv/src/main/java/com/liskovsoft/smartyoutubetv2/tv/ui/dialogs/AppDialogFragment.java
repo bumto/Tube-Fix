@@ -335,11 +335,13 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
             // Initialize preference internals first (keeps lifecycle hooks valid).
             View preferenceView = super.onCreateView(inflater, container, savedInstanceState);
 
-            if (sTwoPaneEnabled && getContext() != null) {
+            Context context = getActivity();
+
+            if (sTwoPaneEnabled && context != null) {
                 // MOD: YouTube TV style settings — categories left, options right.
                 sTwoPaneActive = true;
                 expandSettingsContainer();
-                return new TwoPaneSettingsView(getContext(), mCategories, mTitle);
+                return new TwoPaneSettingsView(context, mCategories, mTitle);
             }
 
             View view = preferenceView;
@@ -381,7 +383,12 @@ public class AppDialogFragment extends LeanbackSettingsFragment implements AppDi
 
             FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) lp;
             mExpandedContainer = (FrameLayout) container;
-            mOriginalContainerParams = new FrameLayout.LayoutParams(params);
+            mOriginalContainerParams = new FrameLayout.LayoutParams(params.width, params.height);
+            mOriginalContainerParams.gravity = params.gravity;
+            mOriginalContainerParams.leftMargin = params.leftMargin;
+            mOriginalContainerParams.topMargin = params.topMargin;
+            mOriginalContainerParams.rightMargin = params.rightMargin;
+            mOriginalContainerParams.bottomMargin = params.bottomMargin;
 
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = ViewGroup.LayoutParams.MATCH_PARENT;
