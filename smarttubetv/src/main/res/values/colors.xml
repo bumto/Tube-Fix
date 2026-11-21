@@ -81,6 +81,8 @@
     <color name="tt_surface_pure_black">#000000</color>
     <color name="tt_rail_text">#B0B0B0</color>
     <color name="tt_rail_text_focused">#0F0F0F</color>
+    <color name="tt_rail_text_collapsed_selected">#FFFFFF</color>
+    <color name="tt_rail_footer">#7A7A7A</color>
     <color name="tt_rail_pill">#F1F1F1</color>
     <color name="tt_rail_divider">#3F3F3F</color>
     <color name="tt_search_pill">#1F1F1F</color>

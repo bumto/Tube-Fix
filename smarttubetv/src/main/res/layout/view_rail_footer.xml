@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: pinned rail footer hint (remote buttons) -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rail_footer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical|start"
+    android:paddingStart="@dimen/rail_content_padding_start"
+    android:singleLine="true"
+    android:ellipsize="end"
+    android:text="@string/rail_footer_hint"
+    android:textColor="@color/tt_rail_footer"
+    android:textSize="@dimen/rail_footer_text_size"
+    android:visibility="gone" />

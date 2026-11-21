@@ -1461,6 +1461,12 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     // MOD: YouTube TV style pinned rail
     public static boolean sPinnedHeadersExpanded;
 
+    public interface OnPinnedHeadersExpandedListener {
+        void onPinnedHeadersExpanded(boolean expanded);
+    }
+
+    public static OnPinnedHeadersExpandedListener sPinnedHeadersExpandedListener;
+
     private void setPinnedHeadersExpanded(boolean expand) {
         if (!sPinnedHeadersEnabled || expand == sPinnedHeadersExpanded) {
             return;
@@ -1488,6 +1494,9 @@ public class BrowseSupportFragment extends BaseSupportFragment {
             params.setMarginStart(expand ? getPinnedExpandMargin(mScaleFrameLayout) : 0);
             mScaleFrameLayout.setLayoutParams(params);
         }
+        if (sPinnedHeadersExpandedListener != null) {
+            sPinnedHeadersExpandedListener.onPinnedHeadersExpanded(expand);
+        }
     }
 
     static int getPinnedExpandMargin(View view) {
@@ -1504,7 +1513,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
             View wrapper = list.getChildAt(i);
             View label = wrapper == null ? null : wrapper.findViewById(R.id.header_label);
             if (label != null) {
-                label.setVisibility(View.VISIBLE);
+                label.setVisibility(sPinnedHeadersExpanded ? View.VISIBLE : View.GONE);
             }
         }
     }

@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- MOD: TizenTube style rail item (icon + label side by side) -->
+<!-- MOD: YouTube TV style rail item — icon only when collapsed, icon + label when expanded -->
 <androidx.leanback.widget.NonOverlappingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="222dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
-
-    <!-- MOD: group separator (visible on first item of each rail group) -->
-    <View
-        android:id="@+id/header_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?attr/ttRailDividerColor"
-        android:visibility="gone" />
+    android:gravity="center_vertical">
 
     <LinearLayout
+        android:id="@+id/header_pill"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/rail_item_height"
+        android:layout_marginStart="@dimen/rail_item_margin"
+        android:layout_marginEnd="@dimen/rail_item_margin"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:duplicateParentState="true"
         android:background="@drawable/header_pill_bg"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp">
+        android:paddingStart="@dimen/rail_item_padding_start"
+        android:paddingEnd="@dimen/rail_item_padding_start">
 
         <ImageView
             android:id="@+id/header_icon"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="@dimen/rail_icon_size"
+            android:layout_height="@dimen/rail_icon_size"
             android:duplicateParentState="true"
             android:contentDescription="@string/header_icon" />
 
@@ -39,15 +32,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="@dimen/rail_icon_margin"
             android:duplicateParentState="true"
             android:gravity="center_vertical"
             android:singleLine="true"
             android:ellipsize="end"
             android:includeFontPadding="false"
-
             android:textColor="@color/header_label_color"
-            android:textSize="12sp"/>
+            android:textSize="@dimen/rail_label_size"/>
 
     </LinearLayout>
 

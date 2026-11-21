@@ -1,16 +1,20 @@
 package com.liskovsoft.smartyoutubetv2.tv.presenter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.leanback.app.BrowseSupportFragment;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.PageRow;
@@ -25,7 +29,6 @@ import com.liskovsoft.sharedutils.mylogger.Log;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.BrowseSection;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter;
 import com.liskovsoft.smartyoutubetv2.tv.R;
-import com.liskovsoft.smartyoutubetv2.tv.ui.browse.SectionHeaderItem;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 public class IconHeaderItemPresenter extends RowHeaderPresenter {
@@ -51,18 +54,11 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
         // MOD: inflate with parent so the rail item width is honored — grid uses
         // UNSPECIFIED spec for secondary size, so match_parent would collapse to 0
         View view = inflater.inflate(R.layout.icon_header_item, viewGroup, false);
-        view.setAlpha(mUnselectedAlpha); // Initialize icons to be at half-opacity.
+        view.setAlpha(1f);
 
-        // MOD: YouTube TV style — labels stay visible in collapsed and expanded rail
-        TextView labelView = view.findViewById(R.id.header_label);
-        ImageView iconView = view.findViewById(R.id.header_icon);
-        if (labelView != null) {
-            labelView.setVisibility(View.VISIBLE);
-        }
-        view.setOnFocusChangeListener((v, hasFocus) -> {
-            updateIconTint(iconView, hasFocus, v.isSelected());
-        });
-        updateIconTint(iconView, false, false);
+        view.setOnFocusChangeListener((v, hasFocus) ->
+                updateItemState(v, hasFocus, v.isSelected()));
+        updateItemState(view, false, false);
 
         return new ViewHolder(view);
     }
@@ -98,37 +94,66 @@ public class IconHeaderItemPresenter extends RowHeaderPresenter {
                 Drawable icon = mResId > 0 ? ContextCompat.getDrawable(rootView.getContext(), mResId) : mDefaultIcon;
                 iconView.setImageDrawable(icon);
             }
-
-            updateIconTint(iconView, rootView.isFocused(), isCurrentSection);
         }
 
         TextView label = rootView.findViewById(R.id.header_label);
         if (label != null) {
             label.setText(headerItem.getName());
-            label.setVisibility(View.VISIBLE);
-            label.requestLayout();
         }
 
-        // MOD: YouTube TV style rail — separator above the first item of a group
-        View divider = rootView.findViewById(R.id.header_divider);
-        if (divider != null) {
-            divider.setVisibility(headerItem instanceof SectionHeaderItem
-                    && ((SectionHeaderItem) headerItem).isGroupStart()
-                    ? View.VISIBLE : View.GONE);
-        }
+        updateItemState(rootView, rootView.isFocused(), isCurrentSection);
     }
 
-    private static void updateIconTint(ImageView iconView, boolean focused, boolean selected) {
-        if (iconView == null) {
-            return;
+    /**
+     * MOD: collapsed rail shows icons only (selected icon turns white); expanded rail
+     * shows the SmartTube-style pill with a dark label/icon.
+     */
+    private static void updateItemState(View rootView, boolean focused, boolean selected) {
+        Context context = rootView.getContext();
+        boolean expanded = BrowseSupportFragment.sPinnedHeadersExpanded;
+
+        int railText = resolveThemeColor(context, R.attr.ttRailTextColor,
+                ContextCompat.getColor(context, R.color.tt_rail_text));
+        int railTextFocused = resolveThemeColor(context, R.attr.ttRailTextFocusedColor,
+                ContextCompat.getColor(context, R.color.tt_rail_text_focused));
+
+        int color;
+        if (expanded) {
+            color = focused || selected ? railTextFocused : railText;
+        } else {
+            color = selected ? ContextCompat.getColor(context, R.color.tt_rail_text_collapsed_selected) : railText;
         }
 
-        Context context = iconView.getContext();
-        int color = focused || selected
-                ? resolveThemeColor(context, R.attr.ttRailTextFocusedColor, ContextCompat.getColor(context, R.color.tt_rail_text_focused))
-                : resolveThemeColor(context, R.attr.ttRailTextColor, ContextCompat.getColor(context, R.color.tt_rail_text));
+        ImageView icon = rootView.findViewById(R.id.header_icon);
+        if (icon != null) {
+            icon.setColorFilter(color);
 
-        iconView.setColorFilter(color);
+            LinearLayout.LayoutParams iconParams = (LinearLayout.LayoutParams) icon.getLayoutParams();
+            iconParams.setMarginStart(0);
+            iconParams.setMarginEnd(expanded ? context.getResources().getDimensionPixelSize(R.dimen.rail_icon_margin) : 0);
+            icon.setLayoutParams(iconParams);
+        }
+
+        TextView label = rootView.findViewById(R.id.header_label);
+        if (label != null) {
+            label.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            label.setTextColor(color);
+        }
+
+        LinearLayout pill = rootView.findViewById(R.id.header_pill);
+        if (pill != null) {
+            int padding = context.getResources().getDimensionPixelSize(R.dimen.rail_item_padding_start);
+
+            if (expanded) {
+                pill.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
+                pill.setPadding(padding, 0, padding, 0);
+                pill.setBackgroundResource(R.drawable.header_pill_bg);
+            } else {
+                pill.setGravity(Gravity.CENTER);
+                pill.setPadding(0, 0, 0, 0);
+                pill.setBackgroundColor(Color.TRANSPARENT);
+            }
+        }
     }
 
     private static int resolveThemeColor(Context context, int attr, int fallback) {

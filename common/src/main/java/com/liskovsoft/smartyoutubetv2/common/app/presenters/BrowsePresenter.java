@@ -190,7 +190,7 @@ public class BrowsePresenter extends BasePresenter<BrowseView> implements Sectio
         int uploadsType = getMainUIData().isUploadsOldLookEnabled() ? BrowseSection.TYPE_GRID : BrowseSection.TYPE_MULTI_GRID;
 
         // MOD: TizenTube-style search tab in the sidebar
-        mSectionsMapping.put(MediaGroup.TYPE_SEARCH, new BrowseSection(MediaGroup.TYPE_SEARCH, getContext().getString(R.string.title_search), BrowseSection.TYPE_ERROR, android.R.drawable.ic_menu_search, false));
+        mSectionsMapping.put(MediaGroup.TYPE_SEARCH, new BrowseSection(MediaGroup.TYPE_SEARCH, getContext().getString(R.string.title_search), BrowseSection.TYPE_ROW, R.drawable.action_search, false));
         mSectionsMapping.put(MediaGroup.TYPE_HOME, new BrowseSection(MediaGroup.TYPE_HOME, getContext().getString(R.string.header_home), BrowseSection.TYPE_ROW, R.drawable.icon_home, false));
         mSectionsMapping.put(MediaGroup.TYPE_SHORTS, new BrowseSection(MediaGroup.TYPE_SHORTS, getContext().getString(R.string.header_shorts), BrowseSection.TYPE_SHORTS_GRID, R.drawable.icon_shorts));
         mSectionsMapping.put(MediaGroup.TYPE_TRENDING, new BrowseSection(MediaGroup.TYPE_TRENDING, getContext().getString(R.string.header_trending), BrowseSection.TYPE_ROW, R.drawable.icon_trending));

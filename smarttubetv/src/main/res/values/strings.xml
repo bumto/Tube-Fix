@@ -118,4 +118,7 @@
     <string name="text_post_results_title">Posts for %s</string>
     <string name="text_no_results">No results</string>
     <string name="error_message_network_needed">Oops, you need a network connection to do that!</string>
+
+    <!-- MOD: pinned rail footer hint -->
+    <string name="rail_footer_hint" translatable="false">OK pilih · Kembali tutup</string>
 </resources>

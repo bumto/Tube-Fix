@@ -4,12 +4,29 @@
     <!-- 320dpi, Amazon Fire TV Stick -->
 
     <!-- MOD: YouTube TV style pinned rail (leanback overrides) -->
-    <dimen name="lb_browse_headers_width">255dp</dimen>
+    <!-- Collapsed: icon-only rail. Expanded: SmartTube brand + labels. -->
+    <dimen name="lb_browse_headers_width">80dp</dimen>
     <dimen name="lb_browse_headers_width_expanded">255dp</dimen>
-    <dimen name="lb_browse_headers_expand_margin">255dp</dimen>
+    <!-- Content keeps the expanded rail column; the rail overlays it. -->
+    <dimen name="lb_browse_headers_expand_margin">0dp</dimen>
     <dimen name="lb_browse_padding_start">255dp</dimen>
     <dimen name="lb_browse_headers_z">0dp</dimen>
     <item name="lb_browse_header_unselect_alpha" type="fraction">100%</item>
+
+    <!-- MOD: rail item metrics -->
+    <dimen name="rail_vertical_offset">9dp</dimen>
+    <dimen name="rail_item_height">44dp</dimen>
+    <dimen name="rail_item_margin">8dp</dimen>
+    <dimen name="rail_item_padding_start">16dp</dimen>
+    <dimen name="rail_content_padding_start">24dp</dimen>
+    <dimen name="rail_icon_size">20dp</dimen>
+    <dimen name="rail_icon_margin">14dp</dimen>
+    <dimen name="rail_label_size">14sp</dimen>
+    <dimen name="rail_brand_height">64dp</dimen>
+    <dimen name="rail_brand_icon_size">32dp</dimen>
+    <dimen name="rail_brand_text_size">18sp</dimen>
+    <dimen name="rail_footer_height">40dp</dimen>
+    <dimen name="rail_footer_text_size">12sp</dimen>
 
     <dimen name="card_width">240dp</dimen>
     <dimen name="card_height">132dp</dimen>

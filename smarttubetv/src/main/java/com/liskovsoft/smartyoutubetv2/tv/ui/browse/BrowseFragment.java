@@ -2,12 +2,15 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.browse;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -57,6 +60,10 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
     private boolean mIsFragmentCreated;
     private boolean mFocusOnContent;
     private CrashRestorer mCrashRestorer;
+    private LinearLayout mRailBrand;
+    private View mRailFooter;
+    private final BrowseSupportFragment.OnPinnedHeadersExpandedListener mRailExpandListener =
+            this::onPinnedHeadersExpanded;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,13 +104,93 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
 
         View headersRoot = root.findViewById(androidx.leanback.R.id.browse_headers_root);
         if (headersRoot != null) {
-            headersRoot.setTranslationY(TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, -9, getResources().getDisplayMetrics()));
+            headersRoot.setTranslationY(-getResources().getDimensionPixelSize(R.dimen.rail_vertical_offset));
+            setupPinnedRail((RelativeLayout) headersRoot);
         }
 
         mProgressBarManager.setRootView((ViewGroup) root);
 
         return root;
+    }
+
+    /**
+     * MOD: pinned rail brand header (SmartTube icon + name) and footer hint.
+     * Content keeps the expanded rail column, so the rail can collapse without moving cards.
+     */
+    private void setupPinnedRail(RelativeLayout headersRoot) {
+        if (getContext() == null) {
+            return;
+        }
+
+        View fade = headersRoot.findViewById(androidx.leanback.R.id.fade_out_edge);
+        if (fade != null) {
+            fade.setVisibility(View.GONE);
+        }
+
+        int verticalOffset = getResources().getDimensionPixelSize(R.dimen.rail_vertical_offset);
+        int brandHeight = getResources().getDimensionPixelSize(R.dimen.rail_brand_height);
+
+        mRailBrand = (LinearLayout) LayoutInflater.from(getContext())
+                .inflate(R.layout.view_rail_brand, headersRoot, false);
+        RelativeLayout.LayoutParams brandParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, brandHeight);
+        brandParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        brandParams.topMargin = verticalOffset;
+        // The headers root has an end padding for the fading edge; let the brand use the full rail width.
+        brandParams.rightMargin = -headersRoot.getPaddingEnd();
+        headersRoot.addView(mRailBrand, brandParams);
+
+        mRailFooter = LayoutInflater.from(getContext())
+                .inflate(R.layout.view_rail_footer, headersRoot, false);
+        RelativeLayout.LayoutParams footerParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                getResources().getDimensionPixelSize(R.dimen.rail_footer_height));
+        footerParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        headersRoot.addView(mRailFooter, footerParams);
+
+        View grid = headersRoot.findViewById(androidx.leanback.R.id.browse_headers);
+        if (grid != null) {
+            if (grid instanceof ViewGroup) {
+                ((ViewGroup) grid).setClipToPadding(true);
+            }
+            grid.setPadding(grid.getPaddingLeft(),
+                    brandHeight + verticalOffset,
+                    grid.getPaddingRight(),
+                    getResources().getDimensionPixelSize(R.dimen.rail_footer_height));
+        }
+
+        BrowseSupportFragment.sPinnedHeadersExpanded = false;
+        BrowseSupportFragment.sPinnedHeadersExpandedListener = mRailExpandListener;
+        onPinnedHeadersExpanded(false);
+    }
+
+    private void onPinnedHeadersExpanded(boolean expanded) {
+        if (mRailBrand != null) {
+            TextView label = mRailBrand.findViewById(R.id.rail_brand_label);
+            if (label != null) {
+                label.setVisibility(expanded ? View.VISIBLE : View.GONE);
+            }
+
+            int padding = expanded
+                    ? getResources().getDimensionPixelSize(R.dimen.rail_content_padding_start)
+                    : 0;
+            mRailBrand.setPadding(padding, 0, 0, 0);
+            mRailBrand.setGravity(expanded
+                    ? Gravity.CENTER_VERTICAL | Gravity.START
+                    : Gravity.CENTER);
+        }
+
+        if (mRailFooter != null) {
+            mRailFooter.setVisibility(expanded ? View.VISIBLE : View.GONE);
+        }
+
+        if (mHandler != null && mSectionRowAdapter != null) {
+            mHandler.post(() -> {
+                if (mSectionRowAdapter.size() > 0) {
+                    mSectionRowAdapter.notifyArrayItemRangeChanged(0, mSectionRowAdapter.size());
+                }
+            });
+        }
     }
 
     @Override
@@ -499,6 +586,12 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
 
     @Override
     public void onDestroyView() {
+        if (BrowseSupportFragment.sPinnedHeadersExpandedListener == mRailExpandListener) {
+            BrowseSupportFragment.sPinnedHeadersExpandedListener = null;
+        }
+        mRailBrand = null;
+        mRailFooter = null;
+
         mSectionFragmentFactory.cleanup();
 
         super.onDestroyView();

@@ -34,15 +34,15 @@ public class SidebarService implements ProfileChangeListener {
     private final Set<Integer> mDisabledSidebarContents = new LinkedHashSet<>();
     private final static int RESERVED_ID = 100;
     private final static int[] DEFAULT_SIDEBAR_CONTENTS_ORDER = {
+            MediaGroup.TYPE_SEARCH,
             MediaGroup.TYPE_HOME,
             MediaGroup.TYPE_SHORTS,
-            MediaGroup.TYPE_MUSIC,
             MediaGroup.TYPE_LIVE,
+            MediaGroup.TYPE_MUSIC,
             MediaGroup.TYPE_SUBSCRIPTIONS,
             MediaGroup.TYPE_SETTINGS
     };
     private final static int[] DEFAULT_DISABLED_SIDEBAR_CONTENTS = {
-            MediaGroup.TYPE_SEARCH,
             MediaGroup.TYPE_RECOMMENDED,
             MediaGroup.TYPE_HISTORY,
             MediaGroup.TYPE_USER_PLAYLISTS,
@@ -201,8 +201,6 @@ public class SidebarService implements ProfileChangeListener {
             }
         }
 
-        mDisabledSidebarContents.add(MediaGroup.TYPE_SEARCH);
-
         syncPinnedSections();
         persistState();
     }
@@ -330,6 +328,7 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     private void initSections() {
+        mDefaultSections.put(R.string.title_search, MediaGroup.TYPE_SEARCH);
         mDefaultSections.put(R.string.header_notifications, MediaGroup.TYPE_NOTIFICATIONS);
         mDefaultSections.put(R.string.header_home, MediaGroup.TYPE_HOME);
         mDefaultSections.put(R.string.header_shorts, MediaGroup.TYPE_SHORTS);
@@ -361,6 +360,10 @@ public class SidebarService implements ProfileChangeListener {
                 }
             }
         }
+
+        // MOD: keep the search tab pinned to the top of the rail (SmartTube-style layout).
+        result.remove(Integer.valueOf(MediaGroup.TYPE_SEARCH));
+        result.add(0, MediaGroup.TYPE_SEARCH);
 
         for (int sectionId : DEFAULT_SIDEBAR_CONTENTS_ORDER) {
             if (!result.contains(sectionId)) {
@@ -439,8 +442,9 @@ public class SidebarService implements ProfileChangeListener {
             }
         } else {
             mDisabledSidebarContents.addAll(savedDisabled);
+            // MOD: the search tab is part of the rail now (it was force-hidden before).
+            mDisabledSidebarContents.remove(MediaGroup.TYPE_SEARCH);
         }
-        mDisabledSidebarContents.add(MediaGroup.TYPE_SEARCH);
 
         syncPinnedSections();
 
